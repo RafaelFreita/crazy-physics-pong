@@ -1,22 +1,10 @@
-#include <SFML/Graphics.hpp>
-#include <Box2D/Box2D.h>
+#include "App.h"
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(640, 480), "SFML Starter Template");
+	CPPong::App app(1280, 720, "Crazy Physics Pong");
 
-	while (window.isOpen())
-	{
-		// handle events
-
-		// update
-
-		window.clear();
-
-		// draw SFML content
-
-		window.display();
-	}
+	app.Run();
 
 	return EXIT_SUCCESS;
 }
