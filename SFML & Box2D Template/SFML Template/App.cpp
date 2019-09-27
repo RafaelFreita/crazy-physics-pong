@@ -17,7 +17,7 @@ namespace CPPong {
 		// Initalize window
 		window = new sf::RenderWindow(sf::VideoMode(width, height), title, sf::Style::Default, settings);
 		window->setVerticalSyncEnabled(true);
-		window->setFramerateLimit(60);
+		window->setFramerateLimit(TARGET_FPS);
 
 		/* --- Box2D Setup --- */
 		world = new b2World(gravity);
@@ -77,11 +77,13 @@ namespace CPPong {
 
 	void App::Update()
 	{
+		static sf::Clock clock;
+		std::cout << clock.getElapsedTime().asSeconds() << "\n";
+
 		world->Step(TIME_STEP, VEL_ITTS, POS_ITTS);
 
 		for (PhysicalObject* physicalObject : physicalObjects) {
 			b2Vec2 pos = physicalObject->body->GetPosition();
-			//std::cout << pos.x * W2P << "; " << pos.y * W2P << std::endl;
 			physicalObject->shape->setPosition(pos.x * W2P, pos.y * W2P);
 
 			float angle = physicalObject->body->GetAngle();
