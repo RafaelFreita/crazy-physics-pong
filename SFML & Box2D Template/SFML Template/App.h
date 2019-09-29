@@ -11,8 +11,7 @@
 #include <list>
 
 // Internal
-#include "GameObject.h"
-#include "PhysicalObject.h"
+#include "Player.h"
 
 using std::string;
 
@@ -21,37 +20,21 @@ namespace CPPong {
 	class App
 	{
 	private:
-		// Constants
-
-		/* World unit to Pixel unit. */
-		const float W2P = 16.f;
-
-		/* Target FPS for the application. */
-		const int TARGET_FPS = 120;
-
-		/* Physics time step. */
-		const float TIME_STEP = 1.f / 60.f;
-
-		/* Physics velocity iterations. */
-		const int VEL_ITTS = 8;
-
-		/* Physics position iterations. */
-		const int POS_ITTS = 3;
-
-		/* PI constant. */
-		const float PI = 3.1415f;
-
 		// Internal
 		string title;
 		int width;
 		int height;
 
 		// SFML
-		sf::RenderWindow* window;
+		sf::RenderWindow* window = NULL;
 
 		// Box2D
 		const b2Vec2 gravity = b2Vec2(0.f, 9.8f);
-		b2World* world;
+		b2World* world = NULL;
+
+		// Game Variables
+		Player* playerL = NULL;
+		Player* playerR = NULL;
 
 		// Methods
 		void HandleInputs();
@@ -64,7 +47,7 @@ namespace CPPong {
 
 		void Run();
 
-		std::list<GameObject*> gameObjects;
+		std::list<GameObject*> renderObjects;
 		std::list<PhysicalObject*> physicalObjects;
 	};
 

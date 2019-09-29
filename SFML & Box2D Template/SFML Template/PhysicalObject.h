@@ -10,7 +10,7 @@ namespace CPPong {
 	class PhysicalObject : public GameObject
 	{
 	public:
-		PhysicalObject();
+
 		~PhysicalObject();
 
 		PhysicalObject(sf::Shape* shape, b2Body* body);

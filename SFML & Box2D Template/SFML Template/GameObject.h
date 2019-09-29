@@ -8,7 +8,6 @@ namespace CPPong {
 	class GameObject
 	{
 	public:
-		GameObject();
 		~GameObject();
 
 		GameObject(sf::Shape* shape);

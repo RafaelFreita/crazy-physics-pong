@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include <Box2D/Box2D.h>
+#include "Constants.hpp"
 
 namespace CPPong {
 
@@ -22,32 +22,20 @@ namespace CPPong {
 		/* --- Box2D Setup --- */
 		world = new b2World(gravity);
 
+		/* --- Game Scene Setup */
+		// Initialize players
+		const static int offsetBorder = 64;
+		playerL = new Player(world, b2Vec2(offsetBorder, height / 2.f));		// Set left player to center left
+		playerR = new Player(world, b2Vec2(width - offsetBorder, height / 2.f));// Set right player to center right
 
-		/* --- TESTING --- */
-		sf::RectangleShape* rectangle = new sf::RectangleShape(sf::Vector2f(32.f, 32.f));
-		rectangle->setOrigin(16.f, 16.f);
-		rectangle->setFillColor(sf::Color::Green);
-		rectangle->setPosition(width / 2.0f, height / 2.0f);
+		// Adding to render list
+		renderObjects.push_back(playerL->GetPhysicalObj());
+		renderObjects.push_back(playerR->GetPhysicalObj());
 
-		/*GameObject* testGO = new GameObject(rectangle);
-		gameObjects.push_back(testGO);*/
+		// Adding to physical simulation list
+		physicalObjects.push_back(playerL->GetPhysicalObj());
+		physicalObjects.push_back(playerR->GetPhysicalObj());
 
-		b2BodyDef bDef;
-		bDef.position = b2Vec2(width / 2 / W2P, height / 2 / W2P);
-		bDef.type = b2_dynamicBody;
-		b2Body* tBody = world->CreateBody(&bDef);
-
-		b2PolygonShape tShape;
-		tShape.SetAsBox((32.f / 2) / W2P, (32.f / 2) / W2P);
-		b2FixtureDef tFixtureDef;
-		tFixtureDef.density = 1.f;
-		tFixtureDef.friction = 0.7f;
-		tFixtureDef.shape = &tShape;
-		tBody->CreateFixture(&tFixtureDef);
-
-		PhysicalObject* pObject = new PhysicalObject(rectangle, tBody);
-		gameObjects.push_back(pObject);
-		physicalObjects.push_back(pObject);
 	}
 
 	App::~App()
@@ -70,16 +58,24 @@ namespace CPPong {
 		sf::Event event;
 		while (window->pollEvent(event))
 		{
-			if (event.type == sf::Event::Closed)			 window->close();
+			if (event.type == sf::Event::Closed) window->close();
 			else if (event.key.code == sf::Keyboard::Escape) window->close();
 		}
+
+		// --- Players Inputs ---
+		// Player Left
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) { playerL->MoveUp(); }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) { playerL->MoveDown(); }
+
+		// Player Right
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::I)) { playerR->MoveUp(); }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::K)) { playerR->MoveDown(); }
+
+		std::cout << std::endl;
 	}
 
 	void App::Update()
 	{
-		static sf::Clock clock;
-		std::cout << clock.getElapsedTime().asSeconds() << "\n";
-
 		world->Step(TIME_STEP, VEL_ITTS, POS_ITTS);
 
 		for (PhysicalObject* physicalObject : physicalObjects) {
@@ -97,7 +93,7 @@ namespace CPPong {
 		window->clear(sf::Color::Black);
 
 		// Render objects
-		for (GameObject* gameObject : gameObjects) {
+		for (GameObject* gameObject : renderObjects) {
 			window->draw(*gameObject->shape);
 		}
 
@@ -107,8 +103,8 @@ namespace CPPong {
 
 	void App::Finish()
 	{
-		delete window;
 		delete world;
+		delete window;
 	}
 
 }

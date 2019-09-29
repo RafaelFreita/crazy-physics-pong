@@ -2,17 +2,13 @@
 
 namespace CPPong {
 
-	GameObject::GameObject()
+	GameObject::GameObject(sf::Shape * shape) : shape(shape)
 	{
 	}
-
 
 	GameObject::~GameObject()
 	{
-	}
-
-	GameObject::GameObject(sf::Shape * shape) : shape(shape)
-	{
+		delete shape;
 	}
 
 }

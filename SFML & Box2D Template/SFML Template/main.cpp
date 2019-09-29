@@ -2,7 +2,7 @@
 
 int main()
 {
-	CPPong::App app(1280, 720, "Crazy Physics Pong");
+	CPPong::App app(1920, 1080, "Crazy Physics Pong");
 
 	app.Run();
 

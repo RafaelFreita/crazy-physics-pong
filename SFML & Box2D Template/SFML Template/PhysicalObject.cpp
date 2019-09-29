@@ -2,17 +2,14 @@
 
 namespace CPPong {
 
-	PhysicalObject::PhysicalObject()
+	PhysicalObject::PhysicalObject(sf::Shape* shape, b2Body* body) : GameObject(shape), body(body)
 	{
 	}
-
 
 	PhysicalObject::~PhysicalObject()
 	{
-	}
-
-	PhysicalObject::PhysicalObject(sf::Shape* shape, b2Body * body) : GameObject(shape), body(body)
-	{
+		// TODO: Clear pointer?
+		// delete body;
 	}
 
 }
