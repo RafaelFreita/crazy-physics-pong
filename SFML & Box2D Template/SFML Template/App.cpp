@@ -1,7 +1,9 @@
 #include "App.h"
 
+// STD
 #include <iostream>
 
+// Internal
 #include "Constants.hpp"
 
 namespace CPPong {
@@ -24,9 +26,9 @@ namespace CPPong {
 
 		/* --- Game Scene Setup */
 		// Initialize players
-		const static int offsetBorder = 64;
+		const static float32 offsetBorder = 64;
 		playerL = new Player(world, b2Vec2(offsetBorder, height / 2.f));		// Set left player to center left
-		playerR = new Player(world, b2Vec2(width - offsetBorder, height / 2.f));// Set right player to center right
+		playerR = new Player(world, b2Vec2(static_cast<float32>(width) - offsetBorder, height / 2.f));// Set right player to center right
 
 		// Adding to render list
 		renderObjects.push_back(playerL->GetPhysicalObj());
@@ -64,26 +66,30 @@ namespace CPPong {
 
 		// --- Players Inputs ---
 		// Player Left
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) { playerL->MoveUp(); }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) { playerL->MoveUp();	}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) { playerL->MoveDown(); }
 
 		// Player Right
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::I)) { playerR->MoveUp(); }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::I)) { playerR->MoveUp();	}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::K)) { playerR->MoveDown(); }
 
-		std::cout << std::endl;
 	}
 
 	void App::Update()
 	{
+		// Advance world simulation
 		world->Step(TIME_STEP, VEL_ITTS, POS_ITTS);
 
+		// Iterate and update objects
 		for (PhysicalObject* physicalObject : physicalObjects) {
+
+			// Position
 			b2Vec2 pos = physicalObject->body->GetPosition();
 			physicalObject->shape->setPosition(pos.x * W2P, pos.y * W2P);
 
+			// Rotation
 			float angle = physicalObject->body->GetAngle();
-			physicalObject->shape->setRotation(180.0f * angle / PI);
+			physicalObject->shape->setRotation(angle * RAD);
 		}
 	}
 
@@ -103,7 +109,14 @@ namespace CPPong {
 
 	void App::Finish()
 	{
+		// App
+		delete playerL;
+		delete playerR;
+
+		// Box2D
 		delete world;
+		
+		// SFML
 		delete window;
 	}
 

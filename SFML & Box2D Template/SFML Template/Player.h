@@ -10,7 +10,7 @@ namespace CPPong {
 	{
 	private:
 		const b2Vec2	size			= { 16.f, 64.f };
-		const float32	movementForce	= float32(10.f);
+		const float32	movementForce	= 10.f;
 
 		PhysicalObject* physical;
 	public:
@@ -18,8 +18,8 @@ namespace CPPong {
 		~Player();
 
 		inline PhysicalObject* GetPhysicalObj() { return physical; }
-		void MoveUp();
-		void MoveDown();
+		inline void MoveUp()	{ physical->body->ApplyLinearImpulseToCenter(b2Vec2(0.f, -movementForce), false); }
+		inline void MoveDown()	{ physical->body->ApplyLinearImpulseToCenter(b2Vec2(0.f, +movementForce), false); }
 	};
 
 }

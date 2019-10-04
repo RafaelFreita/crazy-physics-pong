@@ -9,10 +9,12 @@ namespace CPPong {
 
 	Player::Player(b2World* world, const b2Vec2& initPos)
 	{
-		// Render
+		// --- Render ---
 		static int i = 0;
 		sf::RectangleShape* rectangle = new sf::RectangleShape(sf::Vector2f(size.x, size.y));
 		rectangle->setOrigin(size.x / 2.f, size.y / 2.f);
+
+		// Color
 		if (i == 0) {
 			rectangle->setFillColor(sf::Color::White);
 			i++;
@@ -21,10 +23,10 @@ namespace CPPong {
 			rectangle->setFillColor(sf::Color::Green);
 		}
 
-		// Physics
+		// --- Physics ---
 		b2BodyDef bodyDef;
 		bodyDef.type = b2_dynamicBody;
-		bodyDef.allowSleep = false;
+		bodyDef.allowSleep = false;	// Prevent player from sleeping - can't apply forces manually
 
 		b2Body* body = world->CreateBody(&bodyDef);
 		body->SetTransform(b2Vec2(initPos.x / W2P, initPos.y / W2P), float32(0));
@@ -46,16 +48,6 @@ namespace CPPong {
 
 	Player::~Player()
 	{
-	}
-
-	void Player::MoveUp()
-	{
-		physical->body->ApplyLinearImpulseToCenter(b2Vec2(0.f, -movementForce), false);
-	}
-
-	void Player::MoveDown()
-	{
-		physical->body->ApplyLinearImpulseToCenter(b2Vec2(0.f, movementForce), false);
 	}
 
 }

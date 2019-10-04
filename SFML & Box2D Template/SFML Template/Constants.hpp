@@ -18,4 +18,7 @@ namespace CPPong {
 	/* PI constant. */
 	const float PI = 3.1415f;
 
+	/* Radian constant. */
+	const float RAD = 180.f / PI;
+
 }
