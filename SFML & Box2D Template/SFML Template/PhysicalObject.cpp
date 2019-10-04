@@ -2,13 +2,17 @@
 
 namespace CPPong {
 
-	PhysicalObject::PhysicalObject(sf::Shape* shape, b2Body* body) : GameObject(shape), body(body)
+	PhysicalObject::PhysicalObject(EntityType type) : type(type)
+	{
+	}
+
+	PhysicalObject::PhysicalObject(sf::Shape* shape, b2Body* body, EntityType type) : GameObject(shape), body(body), type(type)
 	{
 	}
 
 	PhysicalObject::~PhysicalObject()
 	{
-		// TODO: Clear pointer?
+		// TODO: Clear pointer? Box2D Caveats
 		// delete body;
 	}
 

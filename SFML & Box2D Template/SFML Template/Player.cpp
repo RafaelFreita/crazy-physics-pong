@@ -7,47 +7,68 @@
 
 namespace CPPong {
 
-	Player::Player(b2World* world, const b2Vec2& initPos)
+	Player::Player(b2World* world, const b2Vec2& initPos) : PhysicalObject(T_Player)
 	{
+		// --- Internal ---
+		xPosition = initPos.x / W2P;
+
 		// --- Render ---
 		static int i = 0;
-		sf::RectangleShape* rectangle = new sf::RectangleShape(sf::Vector2f(size.x, size.y));
-		rectangle->setOrigin(size.x / 2.f, size.y / 2.f);
+		shape = new sf::RectangleShape(sf::Vector2f(size.x, size.y));
+		shape->setOrigin(size.x / 2.f, size.y / 2.f);
 
 		// Color
 		if (i == 0) {
-			rectangle->setFillColor(sf::Color::White);
+			shape->setFillColor(sf::Color::White);
 			i++;
 		}
 		else {
-			rectangle->setFillColor(sf::Color::Green);
+			shape->setFillColor(sf::Color::Green);
 		}
 
 		// --- Physics ---
+		// BodyDef
 		b2BodyDef bodyDef;
 		bodyDef.type = b2_dynamicBody;
-		bodyDef.allowSleep = false;	// Prevent player from sleeping - can't apply forces manually
+		bodyDef.allowSleep = false;	// Prevent from sleeping - can't apply forces manually
 
-		b2Body* body = world->CreateBody(&bodyDef);
+		// Body
+		body = world->CreateBody(&bodyDef);
 		body->SetTransform(b2Vec2(initPos.x / W2P, initPos.y / W2P), float32(0));
 		body->SetGravityScale(0.0f);
 		body->SetLinearDamping(5.f);
+		body->SetFixedRotation(true); // Fix player rotation
 
+		// Shape
 		b2PolygonShape shape;
-		shape.SetAsBox((32.f / 2.f) / W2P, (32.f / 2.f) / W2P);
+		shape.SetAsBox((size.x / 2.f) / W2P, (size.y / 2.f) / W2P);
 
+		// FixtureDef
 		b2FixtureDef fixtureDef;
 		fixtureDef.density = 0.5f;
 		fixtureDef.friction = 0.5f;
+		fixtureDef.restitution = 1.0f;
 		fixtureDef.shape = &shape;
 
-		body->CreateFixture(&fixtureDef);
+		// FixtureDef - Contact filtering
+		fixtureDef.filter.categoryBits = T_Player;
+		fixtureDef.filter.maskBits = T_Ball;
 
-		physical = new PhysicalObject(rectangle, body);
+		body->CreateFixture(&fixtureDef);
 	}
 
 	Player::~Player()
 	{
+	}
+
+	void Player::CheckPhysics()
+	{
+		const static float32 lockedAngle = float32(0.f);
+		
+		b2Vec2 axisLockedPosition = body->GetPosition();
+		axisLockedPosition.x = xPosition;
+
+		body->SetTransform(axisLockedPosition, lockedAngle);
 	}
 
 }

@@ -12,6 +12,7 @@
 
 // Internal
 #include "Player.h"
+#include "Ball.h"
 
 using std::string;
 
@@ -20,27 +21,37 @@ namespace CPPong {
 	class App
 	{
 	private:
-		// Internal
+		// --- Internal ---
+
 		string title;
 		int width;
 		int height;
 
-		// SFML
+		// --- SFML ---
+
 		sf::RenderWindow* window = NULL;
 
-		// Box2D
+		// --- Box2D ---
+
 		const b2Vec2 gravity = b2Vec2(0.f, 9.8f);
 		b2World* world = NULL;
+		b2Body*	 wallBody = NULL;
 
-		// Game Variables
+		// --- Game Variables ---
+
 		Player* playerL = NULL;
 		Player* playerR = NULL;
+		Ball*	ball = NULL;
 
-		// Methods
+		// --- Methods ---
+
 		void HandleInputs();
 		void Update();
 		void Render();
 		void Finish();
+
+		// Setting wall colliders for top and bottom of the window.
+		void SetWallColliders();
 	public:
 		App(int width, int height, string title);
 		~App();

@@ -1,5 +1,8 @@
 #include "App.h"
 
+// Externals
+#include <Box2D/Box2D.h>
+
 // STD
 #include <iostream>
 
@@ -25,19 +28,32 @@ namespace CPPong {
 		world = new b2World(gravity);
 
 		/* --- Game Scene Setup */
+		SetWallColliders();
+
 		// Initialize players
 		const static float32 offsetBorder = 64;
-		playerL = new Player(world, b2Vec2(offsetBorder, height / 2.f));		// Set left player to center left
-		playerR = new Player(world, b2Vec2(static_cast<float32>(width) - offsetBorder, height / 2.f));// Set right player to center right
+
+		// Set left player to center left
+		playerL = new Player(world, b2Vec2(offsetBorder, (float32)height / 2.f));
+		// Set right player to center right
+		playerR = new Player(world, b2Vec2((float32)width - offsetBorder, (float32)height / 2.f));
+
+		// Ball
+		ball = new Ball(world, b2Vec2((float32)width / 2.f, (float32)height / 2.f));
+		ball->ApplyLinearImpulseToCenter(b2Vec2(-15.f, 0.f), false);
 
 		// Adding to render list
-		renderObjects.push_back(playerL->GetPhysicalObj());
-		renderObjects.push_back(playerR->GetPhysicalObj());
+		renderObjects.push_back(playerL);
+		renderObjects.push_back(playerR);
+		renderObjects.push_back(ball);
 
 		// Adding to physical simulation list
-		physicalObjects.push_back(playerL->GetPhysicalObj());
-		physicalObjects.push_back(playerR->GetPhysicalObj());
+		physicalObjects.push_back(playerL);
+		physicalObjects.push_back(playerR);
+		physicalObjects.push_back(ball);
 
+		std::cout << T_Player << std::endl;
+		std::cout << T_Ball << std::endl;
 	}
 
 	App::~App()
@@ -66,11 +82,11 @@ namespace CPPong {
 
 		// --- Players Inputs ---
 		// Player Left
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) { playerL->MoveUp();	}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) { playerL->MoveUp(); }
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) { playerL->MoveDown(); }
 
 		// Player Right
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::I)) { playerR->MoveUp();	}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::I)) { playerR->MoveUp(); }
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::K)) { playerR->MoveDown(); }
 
 	}
@@ -83,13 +99,15 @@ namespace CPPong {
 		// Iterate and update objects
 		for (PhysicalObject* physicalObject : physicalObjects) {
 
-			// Position
-			b2Vec2 pos = physicalObject->body->GetPosition();
-			physicalObject->shape->setPosition(pos.x * W2P, pos.y * W2P);
+			// Manual check
+			physicalObject->CheckPhysics();
 
-			// Rotation
-			float angle = physicalObject->body->GetAngle();
-			physicalObject->shape->setRotation(angle * RAD);
+			// Set Position
+			b2Vec2 pos = physicalObject->GetPos();
+			physicalObject->SetPos(pos.x * W2P, pos.y * W2P);
+
+			// Set Rotation
+			physicalObject->SetRot(physicalObject->GetAngle() * RAD);
 		}
 	}
 
@@ -100,7 +118,7 @@ namespace CPPong {
 
 		// Render objects
 		for (GameObject* gameObject : renderObjects) {
-			window->draw(*gameObject->shape);
+			window->draw(*gameObject->GetShape());
 		}
 
 		// Display
@@ -112,12 +130,51 @@ namespace CPPong {
 		// App
 		delete playerL;
 		delete playerR;
+		delete ball;
 
 		// Box2D
 		delete world;
-		
+
 		// SFML
 		delete window;
+	}
+
+	void App::SetWallColliders()
+	{
+		b2BodyDef wallBodyDef;
+		wallBodyDef.type = b2_staticBody;
+		wallBodyDef.position.Set(0, 0); // (0, 0) is Top Left corner
+
+		wallBody = world->CreateBody(&wallBodyDef);
+
+		b2EdgeShape wallEdge;
+		b2FixtureDef boxShapeDef;
+		boxShapeDef.filter.categoryBits = T_Wall;
+		boxShapeDef.filter.maskBits = T_Player | T_Ball;
+
+		boxShapeDef.shape = &wallEdge;
+
+		// Define wall edges
+		static const b2Vec2 topLeft		= b2Vec2(0.f / W2P, 0.f / W2P);
+		static const b2Vec2 topRight	= b2Vec2(0.f / W2P, height / W2P);
+		static const b2Vec2 bottomLeft	= b2Vec2(width / W2P, 0.f / W2P);
+		static const b2Vec2 bottomRight = b2Vec2(width / W2P, height / W2P);
+
+		// Top Wall
+		wallEdge.Set(topLeft, topRight);
+		wallBody->CreateFixture(&boxShapeDef);
+		
+		// Bottom Wall
+		wallEdge.Set(bottomLeft, bottomRight);
+		wallBody->CreateFixture(&boxShapeDef);
+
+		// Left Wall/Goal
+		wallEdge.Set(topLeft, bottomLeft);
+		wallBody->CreateFixture(&boxShapeDef);
+
+		// Right Wall/Goal
+		wallEdge.Set(topRight, bottomRight);
+		wallBody->CreateFixture(&boxShapeDef);
 	}
 
 }
