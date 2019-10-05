@@ -9,7 +9,7 @@ namespace CPPong {
 	{
 	private:
 		const b2Vec2	size			= { 16.f, 64.f };
-		const float32	movementForce	= 10.f;
+		const float32	movementForce	= 3.f;
 		float32			xPosition;
 	public:
 		Player(b2World* world, const b2Vec2& initPos);

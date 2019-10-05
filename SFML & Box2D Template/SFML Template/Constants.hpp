@@ -1,7 +1,7 @@
 namespace CPPong {
 
 	/* World unit to Pixel unit. */
-	const float W2P = 16.f;
+	const float W2P = 32.f;
 
 	/* Target FPS for the application. */
 	const int TARGET_FPS = 60;

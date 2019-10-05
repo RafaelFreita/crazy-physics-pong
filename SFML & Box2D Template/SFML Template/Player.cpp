@@ -7,7 +7,7 @@
 
 namespace CPPong {
 
-	Player::Player(b2World* world, const b2Vec2& initPos) : PhysicalObject(T_Player)
+	Player::Player(b2World* world, const b2Vec2& initPos) : PhysicalObject(ET_Player)
 	{
 		// --- Internal ---
 		xPosition = initPos.x / W2P;
@@ -45,16 +45,19 @@ namespace CPPong {
 
 		// FixtureDef
 		b2FixtureDef fixtureDef;
-		fixtureDef.density = 0.5f;
-		fixtureDef.friction = 0.5f;
-		fixtureDef.restitution = 1.0f;
+		fixtureDef.density = 1.0f;
+		fixtureDef.friction = 0.0f;
+		fixtureDef.restitution = 0.5f;
 		fixtureDef.shape = &shape;
 
 		// FixtureDef - Contact filtering
-		fixtureDef.filter.categoryBits = T_Player;
-		fixtureDef.filter.maskBits = T_Ball;
+		fixtureDef.filter.categoryBits = ET_Player;
+		fixtureDef.filter.maskBits = ET_Ball | ET_Wall;
 
 		body->CreateFixture(&fixtureDef);
+
+		// Set user data
+		body->SetUserData(this);
 	}
 
 	Player::~Player()

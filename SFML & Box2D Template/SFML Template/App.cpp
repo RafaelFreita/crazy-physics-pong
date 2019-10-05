@@ -24,11 +24,15 @@ namespace CPPong {
 		window->setVerticalSyncEnabled(true);
 		window->setFramerateLimit(TARGET_FPS);
 
+		SetWindowRectangle();
+		GetPostProcessingShader();
+
 		/* --- Box2D Setup --- */
 		world = new b2World(gravity);
+		SetContactListeners();
 
 		/* --- Game Scene Setup */
-		SetWallColliders();
+		SetWallCollider();
 
 		// Initialize players
 		const static float32 offsetBorder = 64;
@@ -40,7 +44,7 @@ namespace CPPong {
 
 		// Ball
 		ball = new Ball(world, b2Vec2((float32)width / 2.f, (float32)height / 2.f));
-		ball->ApplyLinearImpulseToCenter(b2Vec2(-15.f, 0.f), false);
+		ball->ApplyLinearImpulseToCenter(b2Vec2(-0.0f, 0.5f), false);
 
 		// Adding to render list
 		renderObjects.push_back(playerL);
@@ -48,12 +52,9 @@ namespace CPPong {
 		renderObjects.push_back(ball);
 
 		// Adding to physical simulation list
-		physicalObjects.push_back(playerL);
-		physicalObjects.push_back(playerR);
-		physicalObjects.push_back(ball);
-
-		std::cout << T_Player << std::endl;
-		std::cout << T_Ball << std::endl;
+		dynamicObjects.push_back(playerL);
+		dynamicObjects.push_back(playerR);
+		dynamicObjects.push_back(ball);
 	}
 
 	App::~App()
@@ -97,7 +98,7 @@ namespace CPPong {
 		world->Step(TIME_STEP, VEL_ITTS, POS_ITTS);
 
 		// Iterate and update objects
-		for (PhysicalObject* physicalObject : physicalObjects) {
+		for (PhysicalObject* physicalObject : dynamicObjects) {
 
 			// Manual check
 			physicalObject->CheckPhysics();
@@ -114,12 +115,21 @@ namespace CPPong {
 	void App::Render()
 	{
 		// Clear framebuffer
-		window->clear(sf::Color::Black);
+		renderTexture.clear(sf::Color::Black);
 
 		// Render objects
 		for (GameObject* gameObject : renderObjects) {
-			window->draw(*gameObject->GetShape());
+			renderTexture.draw(*gameObject->GetShape());
 		}
+
+		// Display texture
+		renderTexture.display();
+
+		// Clear window
+		window->clear(sf::Color::Black);
+
+		// Blit texture to window
+		window->draw(winRectangle, 4, sf::TrianglesStrip, postFxRenderState);
 
 		// Display
 		window->display();
@@ -139,7 +149,38 @@ namespace CPPong {
 		delete window;
 	}
 
-	void App::SetWallColliders()
+	void App::SetWindowRectangle()
+	{
+		winRectangle[0] = sf::Vector2f(0, 0);
+		winRectangle[1] = sf::Vector2f(width, 0);
+		winRectangle[2] = sf::Vector2f(0, height);
+		winRectangle[3] = sf::Vector2f(width, height);
+	}
+
+	void App::GetPostProcessingShader()
+	{
+		if (!renderTexture.create(width, height, true)) {
+			printf("ERROR::Couldn't create render texture");
+			return;
+		}
+
+		if (!sf::Shader::isAvailable()) {
+			printf("ERROR::Shaders not available!");
+			return;
+		}
+
+		if (!postFxShader.loadFromFile("shaders/postfx.glsl", sf::Shader::Fragment)) {
+			printf("ERROR::Couldn't load Post FX shader!");
+			return;
+		}
+
+		postFxShader.setUniform("texture", renderTexture.getTexture());
+
+		postFxRenderState = sf::RenderStates(&postFxShader);
+
+	}
+
+	void App::SetWallCollider()
 	{
 		b2BodyDef wallBodyDef;
 		wallBodyDef.type = b2_staticBody;
@@ -149,21 +190,21 @@ namespace CPPong {
 
 		b2EdgeShape wallEdge;
 		b2FixtureDef boxShapeDef;
-		boxShapeDef.filter.categoryBits = T_Wall;
-		boxShapeDef.filter.maskBits = T_Player | T_Ball;
+		boxShapeDef.filter.categoryBits = ET_Wall;
+		boxShapeDef.filter.categoryBits = ET_Any;
 
 		boxShapeDef.shape = &wallEdge;
 
 		// Define wall edges
-		static const b2Vec2 topLeft		= b2Vec2(0.f / W2P, 0.f / W2P);
-		static const b2Vec2 topRight	= b2Vec2(0.f / W2P, height / W2P);
-		static const b2Vec2 bottomLeft	= b2Vec2(width / W2P, 0.f / W2P);
+		static const b2Vec2 topLeft = b2Vec2(0.f / W2P, 0.f / W2P);
+		static const b2Vec2 topRight = b2Vec2(0.f / W2P, height / W2P);
+		static const b2Vec2 bottomLeft = b2Vec2(width / W2P, 0.f / W2P);
 		static const b2Vec2 bottomRight = b2Vec2(width / W2P, height / W2P);
 
 		// Top Wall
 		wallEdge.Set(topLeft, topRight);
 		wallBody->CreateFixture(&boxShapeDef);
-		
+
 		// Bottom Wall
 		wallEdge.Set(bottomLeft, bottomRight);
 		wallBody->CreateFixture(&boxShapeDef);
@@ -175,6 +216,11 @@ namespace CPPong {
 		// Right Wall/Goal
 		wallEdge.Set(topRight, bottomRight);
 		wallBody->CreateFixture(&boxShapeDef);
+	}
+
+	void App::SetContactListeners()
+	{
+		world->SetContactListener(&clPlayerBallInstance);
 	}
 
 }

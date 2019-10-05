@@ -11,12 +11,12 @@ namespace CPPong {
 	class PhysicalObject : public GameObject
 	{
 	protected:
-		PhysicalObject(EntityType type = T_Any);
+		PhysicalObject(EntityType type = ET_Any);
 
-		EntityType type = T_Any;
+		EntityType type = ET_Any;
 		b2Body* body = NULL;
 	public:
-		PhysicalObject(sf::Shape* shape, b2Body* body, EntityType type = T_Any);
+		PhysicalObject(sf::Shape* shape, b2Body* body, EntityType type = ET_Any);
 		~PhysicalObject();
 
 		inline void ApplyLinearImpulseToCenter(const b2Vec2& impulse, bool wake) { body->ApplyLinearImpulseToCenter(impulse, wake); }
@@ -24,6 +24,7 @@ namespace CPPong {
 		inline const EntityType GetType() { return type; }
 		inline const b2Vec2& GetPos() { return body->GetPosition(); }
 		inline const float& GetAngle() { return body->GetAngle(); }
+		inline const b2Vec2& GetVel() { return body->GetLinearVelocity(); }
 
 		virtual void CheckPhysics() = 0;
 	};

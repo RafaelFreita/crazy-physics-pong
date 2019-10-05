@@ -13,6 +13,7 @@
 // Internal
 #include "Player.h"
 #include "Ball.h"
+#include "ContactListener.h"
 
 using std::string;
 
@@ -30,6 +31,10 @@ namespace CPPong {
 		// --- SFML ---
 
 		sf::RenderWindow* window = NULL;
+		sf::Vertex winRectangle[4];
+		sf::RenderTexture renderTexture;
+		sf::Shader postFxShader;
+		sf::RenderStates postFxRenderState;
 
 		// --- Box2D ---
 
@@ -42,6 +47,7 @@ namespace CPPong {
 		Player* playerL = NULL;
 		Player* playerR = NULL;
 		Ball*	ball = NULL;
+		ContactListener clPlayerBallInstance;
 
 		// --- Methods ---
 
@@ -50,8 +56,18 @@ namespace CPPong {
 		void Render();
 		void Finish();
 
-		// Setting wall colliders for top and bottom of the window.
-		void SetWallColliders();
+		void SetWindowRectangle();
+
+		// Gets the post processings FX shader (motion blur). 
+		void GetPostProcessingShader();
+
+		// Sets the contact listener callback.
+		void SetContactListeners();
+
+		// Sets wall colliders for top and bottom of the window.
+		void SetWallCollider();
+
+
 	public:
 		App(int width, int height, string title);
 		~App();
@@ -59,7 +75,7 @@ namespace CPPong {
 		void Run();
 
 		std::list<GameObject*> renderObjects;
-		std::list<PhysicalObject*> physicalObjects;
+		std::list<PhysicalObject*> dynamicObjects;
 	};
 
 }
