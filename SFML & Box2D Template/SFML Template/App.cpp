@@ -42,6 +42,10 @@ namespace CPPong {
 		// Set right player to center right
 		playerR = new Player(world, b2Vec2((float32)width - offsetBorder, (float32)height / 2.f));
 
+		// TODO: Setting player types
+		playerL->SetType(PlayerType::Default);
+		playerR->SetType(PlayerType::Velcro);
+
 		// Ball
 		ball = new Ball(world, b2Vec2((float32)width / 2.f, (float32)height / 2.f));
 		//ball->ApplyLinearImpulseToCenter(b2Vec2(5.0f, .0f), false);

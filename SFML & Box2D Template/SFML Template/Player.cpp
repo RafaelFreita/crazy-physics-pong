@@ -7,6 +7,13 @@
 
 namespace CPPong {
 
+	std::map<PlayerType, PlayerSpecs> const Player::playerTypeMap = {
+		{PlayerType::Default, {1.f, .5f}},
+		{PlayerType::Wood, {1.3f, .66f}},
+		{PlayerType::Rubber, {1.6f, .33f}},
+		{PlayerType::Velcro, {1.f, 1.f}}
+	};
+
 	Player::Player(b2World* world, const b2Vec2& initPos) : PhysicalObject(ET_Player)
 	{
 		// --- Internal ---
@@ -67,11 +74,18 @@ namespace CPPong {
 	void Player::CheckPhysics()
 	{
 		const static float32 lockedAngle = float32(0.f);
-		
+
 		b2Vec2 axisLockedPosition = body->GetPosition();
 		axisLockedPosition.x = initPos.x;
 
 		body->SetTransform(axisLockedPosition, lockedAngle);
+	}
+
+	void Player::SetType(PlayerType playerType)
+	{
+		PlayerSpecs playerSpecs = playerTypeMap.at(playerType);
+		ballRicochetFactor = playerSpecs.ballRicochetFactor;
+		ballEffectFactor = playerSpecs.ballEffectFactor;
 	}
 
 	void Player::Reset()

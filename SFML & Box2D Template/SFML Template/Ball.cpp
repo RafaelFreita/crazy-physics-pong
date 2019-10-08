@@ -26,6 +26,7 @@ namespace CPPong {
 		b2BodyDef bodyDef;
 		bodyDef.type = b2_dynamicBody;
 		bodyDef.allowSleep = false;	// Prevent from sleeping - can't apply forces manually
+		bodyDef.bullet = true; // Ball can get quite fast, better set to bullet to avoid problems!
 
 		// Body
 		body = world->CreateBody(&bodyDef);
@@ -52,7 +53,6 @@ namespace CPPong {
 
 		// Set user data
 		body->SetUserData(this);
-		body->SetBullet(true);
 	}
 
 	Ball::~Ball()
@@ -74,20 +74,22 @@ namespace CPPong {
 		body->ApplyLinearImpulseToCenter(acc, true);
 	}
 
-	void Ball::ChangeDirection(b2Vec2 direction)
-	{
-		this->direction = direction;
-		direction.Normalize();
-	}
-
 	b2Vec2 reflect(const b2Vec2& direction, const b2Vec2& normal) {
 		return direction - 2 * (b2Dot(direction, normal)) * normal;
 	}
 
 	void Ball::ReflectDirection(b2Vec2 normal)
 	{
+		normal.Normalize();
 		direction.Normalize();
 		direction = reflect(direction, normal);
+	}
+
+	void Ball::Boost(float factor)
+	{
+		direction.Normalize();
+		b2Vec2 impulse = b2Vec2(direction.x * factor * 10.f, direction.y * factor * 10.f);
+		body->ApplyLinearImpulseToCenter(impulse, true);
 	}
 
 	void Ball::SetAcceleration(b2Vec2 acceleration)

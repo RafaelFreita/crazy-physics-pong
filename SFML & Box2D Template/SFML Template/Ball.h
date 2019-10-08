@@ -20,8 +20,8 @@ namespace CPPong {
 		~Ball();
 
 		void CheckPhysics();
-		void ChangeDirection(b2Vec2 direction);
 		void ReflectDirection(b2Vec2 normal);
+		void Boost(float factor);
 
 		void SetAcceleration(b2Vec2 acceleration);
 		void ClearAcceleration();

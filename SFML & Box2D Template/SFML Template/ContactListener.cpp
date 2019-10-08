@@ -49,14 +49,21 @@ namespace CPPong {
 			ball->ReflectDirection(worldManifold.normal);
 
 			ball->ClearAcceleration(); // Always clear the acceleration when a collision happen
-		}
 
-		// Apply extra force based on player movement
-		if (player && ball) {
 			// Apply accelaration to ball when colliding with player
-			b2Vec2 playerVel = player->GetVel();
-			b2Vec2 impulse = b2Vec2(0.f, -playerVel.y / 10.f / 10.f);
-			ball->SetAcceleration(impulse);
+			if (player) {
+				// Create acceleration based on player movement
+				// Acceleration is create to the opposite side of velocity
+				b2Vec2 playerVel = player->GetVel();
+				b2Vec2 impulse = b2Vec2(0.f, -playerVel.y / 100.f);
+				// Multiply impulse by effect factor
+				impulse *= player->GetBallEffectFactor();
+
+				ball->SetAcceleration(impulse);
+
+				// Apply impulse based on player ricochet factor
+				ball->Boost(player->GetBallRicochetFactor());
+			}
 		}
 
 	}
