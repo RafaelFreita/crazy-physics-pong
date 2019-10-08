@@ -13,6 +13,7 @@
 // Internal
 #include "Player.h"
 #include "Ball.h"
+#include "Goal.h"
 #include "ContactListener.h"
 
 using std::string;
@@ -47,7 +48,12 @@ namespace CPPong {
 		Player* playerL = NULL;
 		Player* playerR = NULL;
 		Ball*	ball = NULL;
-		ContactListener clPlayerBallInstance;
+		Goal*	goalL = NULL;
+		Goal*	goalR = NULL;
+		ContactListener contactListenerCallback;
+
+		std::list<GameObject*> renderObjects;
+		std::list<PhysicalObject*> dynamicObjects;
 
 		// --- Methods ---
 
@@ -64,18 +70,17 @@ namespace CPPong {
 		// Sets the contact listener callback.
 		void SetContactListeners();
 
-		// Sets wall colliders for top and bottom of the window.
+		// Sets wall colliders for borders of the window.
+		// Left and right borders are the goals.
 		void SetWallCollider();
 
+		void ResetGameState();
 
 	public:
 		App(int width, int height, string title);
 		~App();
 
 		void Run();
-
-		std::list<GameObject*> renderObjects;
-		std::list<PhysicalObject*> dynamicObjects;
 	};
 
 }

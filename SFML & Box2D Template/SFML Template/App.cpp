@@ -44,7 +44,7 @@ namespace CPPong {
 
 		// Ball
 		ball = new Ball(world, b2Vec2((float32)width / 2.f, (float32)height / 2.f));
-		ball->ApplyLinearImpulseToCenter(b2Vec2(-0.0f, 0.5f), false);
+		//ball->ApplyLinearImpulseToCenter(b2Vec2(5.0f, .0f), false);
 
 		// Adding to render list
 		renderObjects.push_back(playerL);
@@ -110,6 +110,16 @@ namespace CPPong {
 			// Set Rotation
 			physicalObject->SetRot(physicalObject->GetAngle() * RAD);
 		}
+
+		// Check if goals were scored
+		if (goalL->GetWasScored()) {
+			goalL->ClearScore();
+			ResetGameState();
+		}
+		else if (goalR->GetWasScored()){
+			goalR->ClearScore();
+			ResetGameState();
+		}
 	}
 
 	void App::Render()
@@ -138,9 +148,11 @@ namespace CPPong {
 	void App::Finish()
 	{
 		// App
+		delete ball;
 		delete playerL;
 		delete playerR;
-		delete ball;
+		delete goalL;
+		delete goalR;
 
 		// Box2D
 		delete world;
@@ -197,8 +209,8 @@ namespace CPPong {
 
 		// Define wall edges
 		static const b2Vec2 topLeft = b2Vec2(0.f / W2P, 0.f / W2P);
-		static const b2Vec2 topRight = b2Vec2(0.f / W2P, height / W2P);
-		static const b2Vec2 bottomLeft = b2Vec2(width / W2P, 0.f / W2P);
+		static const b2Vec2 topRight = b2Vec2(width / W2P, 0.f / W2P);
+		static const b2Vec2 bottomLeft = b2Vec2(0.f / W2P, height / W2P);
 		static const b2Vec2 bottomRight = b2Vec2(width / W2P, height / W2P);
 
 		// Top Wall
@@ -210,17 +222,22 @@ namespace CPPong {
 		wallBody->CreateFixture(&boxShapeDef);
 
 		// Left Wall/Goal
-		wallEdge.Set(topLeft, bottomLeft);
-		wallBody->CreateFixture(&boxShapeDef);
+		goalL = new Goal(world, topLeft, bottomLeft, true);
 
 		// Right Wall/Goal
-		wallEdge.Set(topRight, bottomRight);
-		wallBody->CreateFixture(&boxShapeDef);
+		goalR = new Goal(world, topRight, bottomRight, false);
+	}
+
+	void App::ResetGameState()
+	{
+		playerL->Reset();
+		playerR->Reset();
+		ball->Reset();
 	}
 
 	void App::SetContactListeners()
 	{
-		world->SetContactListener(&clPlayerBallInstance);
+		world->SetContactListener(&contactListenerCallback);
 	}
 
 }

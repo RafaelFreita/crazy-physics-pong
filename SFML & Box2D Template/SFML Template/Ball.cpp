@@ -11,6 +11,9 @@ namespace CPPong {
 
 	Ball::Ball(b2World* world, const b2Vec2& initPos) : PhysicalObject(ET_Ball)
 	{
+		// --- Internal ---
+		this->initPos = b2Vec2(initPos.x / W2P, initPos.y / W2P);
+
 		// --- Render ---
 		shape = new sf::CircleShape(radius);
 		shape->setOrigin(radius, radius);
@@ -28,7 +31,7 @@ namespace CPPong {
 		body = world->CreateBody(&bodyDef);
 		body->SetTransform(b2Vec2(initPos.x / W2P, initPos.y / W2P), float32(0));
 		body->SetGravityScale(0.0f);
-		body->SetLinearDamping(0.5f);
+		body->SetLinearDamping(0.f);
 
 		// Shape
 		b2CircleShape shape;
@@ -38,7 +41,7 @@ namespace CPPong {
 		b2FixtureDef fixtureDef;
 		fixtureDef.density = 1.0f;
 		fixtureDef.friction = 0.0f;
-		fixtureDef.restitution = 1.0f;
+		fixtureDef.restitution = 1.f;
 		fixtureDef.shape = &shape;
 
 		// Fixture - Contact filtering
@@ -49,6 +52,7 @@ namespace CPPong {
 
 		// Set user data
 		body->SetUserData(this);
+		body->SetBullet(true);
 	}
 
 	Ball::~Ball()
@@ -57,13 +61,17 @@ namespace CPPong {
 
 	void Ball::CheckPhysics()
 	{
-		b2Vec2 vel = body->GetLinearVelocity();
+		//b2Vec2 vel = body->GetLinearVelocity();
 
-		b2Vec2 velDif = b2Vec2(direction.x * constVelocity - vel.x, direction.y * constVelocity - vel.y);
+		//b2Vec2 velDif = b2Vec2(direction.x * constVelocity - vel.x, direction.y * constVelocity - vel.y);
+		b2Vec2 velDif = b2Vec2(direction.x * constVelocity, direction.y * constVelocity);
 
 		b2Vec2 impulseForce = b2Vec2(velDif.x * body->GetMass(), velDif.y * body->GetMass());
 
-		body->ApplyLinearImpulseToCenter(impulseForce, false);
+		b2Vec2 acc = b2Vec2(acceleration.x * body->GetMass(), acceleration.y * body->GetMass());
+
+		body->ApplyLinearImpulseToCenter(impulseForce, true);
+		body->ApplyLinearImpulseToCenter(acc, true);
 	}
 
 	void Ball::ChangeDirection(b2Vec2 direction)
@@ -80,6 +88,30 @@ namespace CPPong {
 	{
 		direction.Normalize();
 		direction = reflect(direction, normal);
+	}
+
+	void Ball::SetAcceleration(b2Vec2 acceleration)
+	{
+		this->acceleration = acceleration;
+	}
+
+	void Ball::ClearAcceleration()
+	{
+		acceleration = b2Vec2_zero;
+	}
+
+	void Ball::Reset()
+	{
+		body->SetAngularVelocity(0.f);
+		body->SetLinearVelocity(b2Vec2_zero);
+		body->SetTransform(initPos, 0.f);
+
+		// Setting ball to move horizontally
+		// OBS: Doesn't need to flip direction manually because it was already done in the collision.
+		direction.y = 0.f;
+		direction.Normalize();
+
+		acceleration = b2Vec2_zero;
 	}
 
 }

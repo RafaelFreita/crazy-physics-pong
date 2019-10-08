@@ -4,6 +4,7 @@
 #include "PhysicalObject.h"
 #include "Player.h"
 #include "Ball.h"
+#include "Goal.h"
 
 namespace CPPong {
 
@@ -19,25 +20,26 @@ namespace CPPong {
 		void* userDataB = contact->GetFixtureB()->GetBody()->GetUserData();
 		if (userDataB) { typeB = static_cast<PhysicalObject*>(userDataB)->GetType(); }
 
+		
+		// CHECKING TYPE - BALL
 		Ball* ball = NULL;
-		if (typeA == ET_Ball) {
-			ball = static_cast<Ball*>(userDataA);
-		}
-		else if (typeB == ET_Ball) {
-			ball = static_cast<Ball*>(userDataB);
-		}
+		if (typeA == ET_Ball) { ball = static_cast<Ball*>(userDataA); }
+		else if (typeB == ET_Ball) { ball = static_cast<Ball*>(userDataB); }
 
-		// Check if there is a player
+		// CHECKING TYPE -  PLAYER
 		Player* player = NULL;
-		if (typeA == ET_Player) {
-			player = static_cast<Player*>(userDataA);
-		}
-		else if (typeB == ET_Player) {
-			player = static_cast<Player*>(userDataB);
-		}
+		if (typeA == ET_Player) { player = static_cast<Player*>(userDataA); }
+		else if (typeB == ET_Player) { player = static_cast<Player*>(userDataB); }
 
-		// Apply extra force based on player movement?
-		if (player) {}
+		// CHECKING TYPE -  GOAL
+		Goal* goal = NULL;
+		if (typeA == ET_Goal) { goal = static_cast<Goal*>(userDataA); }
+		else if (typeB == ET_Goal) { goal = static_cast<Goal*>(userDataB); }
+
+		// Check if collided with goal
+		if (goal && ball) {
+			goal->Score();
+		}
 
 		// Change ball direction
 		if (ball) {
@@ -45,6 +47,16 @@ namespace CPPong {
 			contact->GetWorldManifold(&worldManifold);
 
 			ball->ReflectDirection(worldManifold.normal);
+
+			ball->ClearAcceleration(); // Always clear the acceleration when a collision happen
+		}
+
+		// Apply extra force based on player movement
+		if (player && ball) {
+			// Apply accelaration to ball when colliding with player
+			b2Vec2 playerVel = player->GetVel();
+			b2Vec2 impulse = b2Vec2(0.f, -playerVel.y / 10.f / 10.f);
+			ball->SetAcceleration(impulse);
 		}
 
 	}

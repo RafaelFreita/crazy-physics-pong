@@ -10,7 +10,7 @@ namespace CPPong {
 	Player::Player(b2World* world, const b2Vec2& initPos) : PhysicalObject(ET_Player)
 	{
 		// --- Internal ---
-		xPosition = initPos.x / W2P;
+		this->initPos = b2Vec2(initPos.x / W2P, initPos.y / W2P);
 
 		// --- Render ---
 		static int i = 0;
@@ -47,7 +47,7 @@ namespace CPPong {
 		b2FixtureDef fixtureDef;
 		fixtureDef.density = 1.0f;
 		fixtureDef.friction = 0.0f;
-		fixtureDef.restitution = 0.5f;
+		fixtureDef.restitution = 1.0f;
 		fixtureDef.shape = &shape;
 
 		// FixtureDef - Contact filtering
@@ -69,9 +69,15 @@ namespace CPPong {
 		const static float32 lockedAngle = float32(0.f);
 		
 		b2Vec2 axisLockedPosition = body->GetPosition();
-		axisLockedPosition.x = xPosition;
+		axisLockedPosition.x = initPos.x;
 
 		body->SetTransform(axisLockedPosition, lockedAngle);
+	}
+
+	void Player::Reset()
+	{
+		body->SetLinearVelocity(b2Vec2_zero);
+		body->SetTransform(initPos, 0.f);
 	}
 
 }

@@ -157,6 +157,7 @@
     <ClCompile Include="ContactListener.cpp" />
     <ClCompile Include="EntityTypes.hpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Goal.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PhysicalObject.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="ContactListener.h" />
     <ClInclude Include="Constants.hpp" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Goal.h" />
     <ClInclude Include="PhysicalObject.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>
