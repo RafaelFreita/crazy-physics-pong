@@ -109,6 +109,19 @@ namespace CPPong {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::I)) { playerR->MoveUp(); }
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::K)) { playerR->MoveDown(); }
 
+		// Player types - Left
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)) { playerL->SetType(PlayerType::Default); }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2)) { playerL->SetType(PlayerType::Wood); }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3)) { playerL->SetType(PlayerType::Rubber); }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4)) { playerL->SetType(PlayerType::Velcro); }
+
+		// Player types - Right
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num7)) { playerR->SetType(PlayerType::Default); }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num8)) { playerR->SetType(PlayerType::Wood); }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num9)) { playerR->SetType(PlayerType::Rubber); }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num0)) { playerR->SetType(PlayerType::Velcro); }
+
+		// Return to reset
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) { Reset(); }
 
 	}
@@ -203,13 +216,13 @@ namespace CPPong {
 
 		const static int horizontalPadding = 64;
 		// Left
-		snprintf(pointsString, 2, "%d", playerLPoints);
+		snprintf(pointsString, 10, "%i", playerLPoints);
 		pointsText.setString(sf::String(pointsString));
 		pointsText.setPosition(width / 2 - horizontalPadding, 0);
 		renderTexture.draw(pointsText);
 
 		// Right
-		snprintf(pointsString, 2, "%d", playerRPoints);
+		snprintf(pointsString, 10, "%i", playerRPoints);
 		pointsText.setString(sf::String(pointsString));
 		pointsText.setPosition(width / 2 + horizontalPadding, 0);
 		renderTexture.draw(pointsText);
