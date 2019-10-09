@@ -36,6 +36,7 @@ namespace CPPong {
 		sf::RenderTexture renderTexture;
 		sf::Shader postFxShader;
 		sf::RenderStates postFxRenderState;
+		sf::Font mainFont;
 
 		// --- Box2D ---
 
@@ -51,6 +52,8 @@ namespace CPPong {
 		Goal*	goalL = NULL;
 		Goal*	goalR = NULL;
 		ContactListener contactListenerCallback;
+		int playerLPoints = 0;
+		int playerRPoints = 0;
 
 		std::list<GameObject*> renderObjects;
 		std::list<PhysicalObject*> dynamicObjects;
@@ -62,6 +65,9 @@ namespace CPPong {
 		void Render();
 		void Finish();
 
+		void RenderUI();
+
+		// Init window vertices for framebuffer
 		void SetWindowRectangle();
 
 		// Gets the post processings FX shader (motion blur). 

@@ -24,7 +24,15 @@ namespace CPPong {
 		window->setVerticalSyncEnabled(true);
 		window->setFramerateLimit(TARGET_FPS);
 
+		// Init Font
+		if (!mainFont.loadFromFile("fonts/arcade.ttf")) {
+			printf("ERROR::Failed to load font!");
+		}
+
+		// Init window vertices (for framebuffer)
 		SetWindowRectangle();
+
+		// Set shader
 		GetPostProcessingShader();
 
 		/* --- Box2D Setup --- */
@@ -117,10 +125,12 @@ namespace CPPong {
 
 		// Check if goals were scored
 		if (goalL->GetWasScored()) {
+			playerRPoints++;
 			goalL->ClearScore();
 			ResetGameState();
 		}
 		else if (goalR->GetWasScored()){
+			playerLPoints++;
 			goalR->ClearScore();
 			ResetGameState();
 		}
@@ -135,6 +145,9 @@ namespace CPPong {
 		for (GameObject* gameObject : renderObjects) {
 			renderTexture.draw(*gameObject->GetShape());
 		}
+
+		// Render UI
+		RenderUI();
 
 		// Display texture
 		renderTexture.display();
@@ -163,6 +176,28 @@ namespace CPPong {
 
 		// SFML
 		delete window;
+	}
+
+	void App::RenderUI()
+	{
+		static char pointsString[2] = {'9','9'};
+		
+		sf::Text pointsText(sf::String(pointsString), mainFont, 64U);
+		pointsText.setFillColor(sf::Color::White);
+		pointsText.setOrigin(16.f, 0.f); // Why these numbers?? I don't know, but they work!
+
+		const static int horizontalPadding = 64;
+		// Left
+		itoa(playerLPoints, pointsString, 10);
+		pointsText.setString(sf::String(pointsString));
+		pointsText.setPosition(width / 2 - horizontalPadding, 0);
+		renderTexture.draw(pointsText);
+
+		// Right
+		itoa(playerRPoints, pointsString, 10);
+		pointsText.setString(sf::String(pointsString));
+		pointsText.setPosition(width / 2 + horizontalPadding, 0);
+		renderTexture.draw(pointsText);
 	}
 
 	void App::SetWindowRectangle()
