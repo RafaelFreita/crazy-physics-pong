@@ -53,7 +53,7 @@ namespace CPPong {
 
 		// TODO: Setting player types
 		playerL->SetType(PlayerType::Default);
-		playerR->SetType(PlayerType::Wood);
+		playerR->SetType(PlayerType::Default);
 
 		// Ball
 		ball = new Ball(world, b2Vec2((float32)width / 2.f, (float32)height / 2.f));
@@ -121,6 +121,39 @@ namespace CPPong {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num9)) { playerR->SetType(PlayerType::Rubber); }
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num0)) { playerR->SetType(PlayerType::Velcro); }
 
+		// Rotators
+		static bool isPressingRotators;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !isPressingRotators) {
+			isPressingRotators = true;
+			rotatorsOn = !rotatorsOn;
+
+			if (rotatorsOn) {
+				rotatorTop = new Rotator(world, b2Vec2((float32)width / 2.f, (float32)(height / 2.f) - (height / 4)), 5.f);
+				rotatorBottom = new Rotator(world, b2Vec2((float32)width / 2.f, (float32)(height / 2.f) + (height / 4)), -5.f);
+
+				renderObjects.push_back(rotatorTop);
+				renderObjects.push_back(rotatorBottom);
+
+				dynamicObjects.push_back(rotatorTop);
+				dynamicObjects.push_back(rotatorBottom);
+			}
+			else {
+				rotatorTop->Destroy(world);
+				rotatorBottom->Destroy(world);
+
+				// Popping for both rotators
+				renderObjects.pop_back();
+				renderObjects.pop_back();
+
+				dynamicObjects.pop_back();
+				dynamicObjects.pop_back();
+
+				delete rotatorTop;
+				delete rotatorBottom;
+			}
+		}
+		else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) { isPressingRotators = false; }
+
 		// Return to reset
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) { Reset(); }
 
@@ -150,7 +183,7 @@ namespace CPPong {
 			playerRPoints++;
 			ResetGameState(false);
 		}
-		else if (goalR->GetWasScored()){ // Left scored
+		else if (goalR->GetWasScored()) { // Left scored
 			playerLPoints++;
 			ResetGameState(true);
 		}
@@ -185,6 +218,8 @@ namespace CPPong {
 	void App::Finish()
 	{
 		// App
+		delete rotatorBottom;
+		delete rotatorTop;
 		delete ball;
 		delete playerL;
 		delete playerR;
@@ -208,8 +243,8 @@ namespace CPPong {
 
 	void App::RenderUI()
 	{
-		static char pointsString[2] = {'9','9'};
-		
+		static char pointsString[2] = { '9','9' };
+
 		sf::Text pointsText(sf::String(pointsString), mainFont, 64U);
 		pointsText.setFillColor(sf::Color::White);
 		pointsText.setOrigin(16.f, 0.f); // Why these numbers?? I don't know, but they work!
@@ -302,7 +337,7 @@ namespace CPPong {
 		goalL->ClearScore();
 		goalR->ClearScore();
 
-		ball->ResetToSide(leftScored);
+		ball->ResetToSide(!leftScored);
 	}
 
 	void App::SetContactListeners()

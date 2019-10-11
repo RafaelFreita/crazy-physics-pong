@@ -14,6 +14,7 @@
 #include "Player.h"
 #include "Ball.h"
 #include "Goal.h"
+#include "Rotator.h"
 #include "ContactListener.h"
 
 using std::string;
@@ -51,6 +52,9 @@ namespace CPPong {
 		Ball*	ball = NULL;
 		Goal*	goalL = NULL;
 		Goal*	goalR = NULL;
+		Rotator* rotatorTop = NULL;
+		Rotator* rotatorBottom = NULL;
+		bool rotatorsOn = false;
 		ContactListener contactListenerCallback;
 		int playerLPoints = 0;
 		int playerRPoints = 0;

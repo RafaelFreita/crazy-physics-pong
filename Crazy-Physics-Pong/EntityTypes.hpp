@@ -6,7 +6,8 @@ namespace CPPong {
 		ET_Ball		= 1<<1,
 		ET_Wall		= 1<<2,
 		ET_Goal		= 1<<3,
-		ET_Any		= (1<<4)-1
+		ET_Rotator	= 1<<4,
+		ET_Any		= (1<<5)-1
 	};
 
 }

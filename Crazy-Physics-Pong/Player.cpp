@@ -20,18 +20,9 @@ namespace CPPong {
 		this->initPos = b2Vec2(initPos.x / W2P, initPos.y / W2P);
 
 		// --- Render ---
-		static int i = 0;
 		shape = new sf::RectangleShape(sf::Vector2f(size.x, size.y));
 		shape->setOrigin(size.x / 2.f, size.y / 2.f);
-
-		// Color
-		if (i == 0) {
-			shape->setFillColor(sf::Color::White);
-			i++;
-		}
-		else {
-			shape->setFillColor(sf::Color::Green);
-		}
+		shape->setFillColor(sf::Color::White);
 
 		// --- Physics ---
 		// BodyDef
@@ -86,6 +77,16 @@ namespace CPPong {
 		PlayerSpecs playerSpecs = playerTypeMap.at(playerType);
 		ballRicochetFactor = playerSpecs.ballRicochetFactor;
 		ballEffectFactor = playerSpecs.ballEffectFactor;
+
+		switch (playerType)
+		{
+		case CPPong::Default: shape->setFillColor(sf::Color::White); break;
+		case CPPong::Wood: shape->setFillColor(sf::Color(201, 141, 121)); break;
+		case CPPong::Rubber: shape->setFillColor(sf::Color(204, 108, 200)); break;
+		case CPPong::Velcro: shape->setFillColor(sf::Color(120, 120, 140)); break;
+		default:
+			break;
+		}
 	}
 
 	void Player::Reset()
