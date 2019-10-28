@@ -16,8 +16,12 @@
 #include "Goal.h"
 #include "Rotator.h"
 #include "ContactListener.h"
+#include "Client.h"
+#include <chrono>
 
 using std::string;
+
+typedef std::chrono::high_resolution_clock Clock;
 
 namespace CPPong {
 
@@ -62,6 +66,14 @@ namespace CPPong {
 		std::list<GameObject*> renderObjects;
 		std::list<PhysicalObject*> dynamicObjects;
 
+		// --- NETWORK ---
+		unsigned int gameTick = 0;
+		Client client;
+		const short int TPS = 60;
+		const double MILLI_PER_TICK = 1000.0 / TPS;
+		std::chrono::time_point<std::chrono::steady_clock> lastTickClock;
+		std::chrono::time_point<std::chrono::steady_clock> newFrameClock;
+
 		// --- Methods ---
 
 		void HandleInputs();
@@ -69,6 +81,7 @@ namespace CPPong {
 		void Render();
 		void RenderUI();
 		void Finish();
+		void SendInputs();
 
 		// Reset game state to start
 		void Reset();

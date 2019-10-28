@@ -17,6 +17,7 @@ namespace CPPong {
 		/* --- SFML Setup --- */
 
 		// Window settings
+		/*
 		sf::ContextSettings settings;
 		settings.antialiasingLevel = 4;
 
@@ -35,6 +36,7 @@ namespace CPPong {
 
 		// Set shader
 		GetPostProcessingShader();
+		*/
 
 		/* --- Box2D Setup --- */
 		world = new b2World(gravity);
@@ -74,6 +76,16 @@ namespace CPPong {
 
 		// Reseting state to be sure everything is right
 		Reset();
+
+		lastTickClock = Clock::now();
+
+		if (server.Bind(SERVER_PORT) != sf::Socket::Done) {
+			fprintf(stderr, "ERROR::FAILED TO BIND PORT\n");
+			throw "ERROR::FAILED TO BIND PORT";
+		}
+		else {
+			printf("Server started successfully!\n");
+		}
 	}
 
 	App::~App()
@@ -83,45 +95,58 @@ namespace CPPong {
 
 	void App::Run()
 	{
-		while (window->isOpen())
+		while (running)
 		{
-			HandleInputs();
-			Update();
-			Render();
+			newFrameClock = Clock::now();
+			auto timeSinceLastTick = std::chrono::duration_cast<std::chrono::milliseconds>(newFrameClock - lastTickClock).count();
+
+			server.CheckNewConnections();
+
+			// Receiving data
+			if (server.Receive() != sf::Socket::Status::Done) {
+				throw new std::exception("ERROR::FAILED TO RECEIVE DATA");
+			}
+
+			if (timeSinceLastTick > MILLI_PER_TICK) {
+				lastTickClock = newFrameClock;
+				gameTick++;
+
+				HandleInputs();
+				Update();
+				SendState();
+			}
 		}
 	}
 
 	void App::HandleInputs()
 	{
-		sf::Event event;
-		while (window->pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed) window->close();
-			else if (event.key.code == sf::Keyboard::Escape) window->close();
-		}
+		GameUserData* playerLData = server.GetPlayerLeft();
+		GameUserData* playerRData = server.GetPlayerRight();
+
 
 		// --- Players Inputs ---
 		// Player Left
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) { playerL->MoveUp(); }
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) { playerL->MoveDown(); }
+		if (playerLData != NULL) {
+			if (playerLData->pressingUp) { playerL->MoveUp(); }
+			if (playerLData->pressingDown) { playerL->MoveDown(); }
+
+			if (playerLData->type != playerL->GetType()) {
+				playerL->SetType((PlayerType)playerLData->type);
+			}
+		}
 
 		// Player Right
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::I)) { playerR->MoveUp(); }
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::K)) { playerR->MoveDown(); }
+		if (playerRData != NULL) {
+			if (playerRData->pressingUp) { playerR->MoveUp(); }
+			if (playerRData->pressingDown) { playerR->MoveDown(); }
 
-		// Player types - Left
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)) { playerL->SetType(PlayerType::Default); }
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2)) { playerL->SetType(PlayerType::Wood); }
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3)) { playerL->SetType(PlayerType::Rubber); }
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4)) { playerL->SetType(PlayerType::Velcro); }
-
-		// Player types - Right
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num7)) { playerR->SetType(PlayerType::Default); }
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num8)) { playerR->SetType(PlayerType::Wood); }
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num9)) { playerR->SetType(PlayerType::Rubber); }
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num0)) { playerR->SetType(PlayerType::Velcro); }
+			if (playerRData->type != playerR->GetType()) {
+				playerR->SetType((PlayerType)playerRData->type);
+			}
+		}
 
 		// Rotators
+		/*
 		static bool isPressingRotators;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !isPressingRotators) {
 			isPressingRotators = true;
@@ -153,9 +178,10 @@ namespace CPPong {
 			}
 		}
 		else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) { isPressingRotators = false; }
+		*/
 
 		// Return to reset
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) { Reset(); }
+		//if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) { Reset(); }
 
 	}
 
@@ -217,6 +243,8 @@ namespace CPPong {
 
 	void App::Finish()
 	{
+		server.Shutdown();
+
 		// App
 		delete rotatorBottom;
 		delete rotatorTop;
@@ -231,6 +259,22 @@ namespace CPPong {
 
 		// SFML
 		delete window;
+	}
+
+	void App::SendState()
+	{
+
+		// Update game state packet and send
+		b2Vec2 auxPos = playerL->GetPos();
+		server.SetPlayerLeftPos(auxPos.x, auxPos.y);
+
+		auxPos = playerR->GetPos();
+		server.SetPlayerRightPos(auxPos.x, auxPos.y);
+
+		auxPos = ball->GetPos();
+		server.SetBallPos(auxPos.x, auxPos.y);
+
+		server.SendState();
 	}
 
 	void App::Reset()

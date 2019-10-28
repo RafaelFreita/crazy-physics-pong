@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29201.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Crazy-Physics-Pong", "Crazy-Physics-Pong\Crazy-Physics-Pong.vcxproj", "{E09AB4A2-B0DE-4F5B-A0DB-354A162803AA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Crazy-Physics-Pong-Server", "Crazy-Physics-Pong-Server\Crazy-Physics-Pong-Server.vcxproj", "{E09AB4A2-B0DE-4F5B-A0DB-354A162803AA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Crazy-Physics-Pong-Client", "Crazy-Physics-Pong-Client\Crazy-Physics-Pong-Client.vcxproj", "{40DB6EB4-52DE-45E0-B39A-CC183B67F00E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,14 @@ Global
 		{E09AB4A2-B0DE-4F5B-A0DB-354A162803AA}.Release|x64.Build.0 = Release|x64
 		{E09AB4A2-B0DE-4F5B-A0DB-354A162803AA}.Release|x86.ActiveCfg = Release|Win32
 		{E09AB4A2-B0DE-4F5B-A0DB-354A162803AA}.Release|x86.Build.0 = Release|Win32
+		{40DB6EB4-52DE-45E0-B39A-CC183B67F00E}.Debug|x64.ActiveCfg = Debug|x64
+		{40DB6EB4-52DE-45E0-B39A-CC183B67F00E}.Debug|x64.Build.0 = Debug|x64
+		{40DB6EB4-52DE-45E0-B39A-CC183B67F00E}.Debug|x86.ActiveCfg = Debug|Win32
+		{40DB6EB4-52DE-45E0-B39A-CC183B67F00E}.Debug|x86.Build.0 = Debug|Win32
+		{40DB6EB4-52DE-45E0-B39A-CC183B67F00E}.Release|x64.ActiveCfg = Release|x64
+		{40DB6EB4-52DE-45E0-B39A-CC183B67F00E}.Release|x64.Build.0 = Release|x64
+		{40DB6EB4-52DE-45E0-B39A-CC183B67F00E}.Release|x86.ActiveCfg = Release|Win32
+		{40DB6EB4-52DE-45E0-B39A-CC183B67F00E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -23,6 +23,7 @@
     <ProjectGuid>{E09AB4A2-B0DE-4F5B-A0DB-354A162803AA}</ProjectGuid>
     <RootNamespace>CrazyPhysicsPong</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Crazy-Physics-Pong-Server</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -148,6 +149,7 @@
     <ClCompile Include="PhysicalObject.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Rotator.cpp" />
+    <ClCompile Include="Server.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
@@ -157,9 +159,11 @@
     <ClInclude Include="EntityTypes.hpp" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Goal.h" />
+    <ClInclude Include="NetworkTypes.hpp" />
     <ClInclude Include="PhysicalObject.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Rotator.h" />
+    <ClInclude Include="Server.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
