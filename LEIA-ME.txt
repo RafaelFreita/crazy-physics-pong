@@ -1,0 +1,72 @@
+** LINK DO PROJETO **
+
+https://github.com/rafaelfreita/crazy-physics-pong
+Branch: master
+
+** DESCRIÇÃO **
+
+Uma releitura de Pong com física.
+Particularmente tenta-se "simular" o Efeito Magnus, no
+qual a rotação altera a trajetória do objeto.
+
+Por ser um jogo simples, tentei manter a estrutura o
+mais simples e documentada possível, para caso algum
+colega se interesse em ler o código. :)
+
+** COMANDOS **
+
+Jogador Esquerda
+	- Movimentação: W/S
+	- Alterar tipo:
+		- 1: Padrão
+		- 2: Madeira
+		- 3: Borracha
+		- 4: Velcro (?)
+
+Jogador Direita
+	- Movimentação: I/K
+	- Alterar tipo:
+		- 7: Padrão
+		- 8: Madeira
+		- 9: Borracha
+		- 0: Velcro (?)
+
+Ativar/Desativar "rotatores"
+	- Espaço
+
+Reiniciar cena
+	- Enter/Return
+	- Não reinia os "rotatores" por design
+
+Fecha jogo
+	- Esc(ape)
+	- Botão X da janela
+
+** ESTRUTURA **
+
+- "App" é a raíz de tudo. É onde encontram-se:
+	- Inicialização
+	- Game loop
+	- Métodos de Update e Render
+	- Finalização
+	- Controle das variáveis do jogo (Jogadores, bola, etc.)
+	- Array de objetos renderizáveis
+	- Array de objetos físicos dinâmicos
+
+- Player
+	- Movimenta para cima/baixo
+	- O tipo define a força e quantidade de efeito que adiciona à bola
+	- Adiciona impulso baseado no input por update
+
+- Bola
+	- Rebate nos objetos
+	- Adiciona impulso da direção por update
+	- Adiciona impulso da aceleração (efeito), quando há, por frame
+	- A aceleração é zerada quando há contato com algo que não seja um player
+
+- Gols
+	- Detectam colisão com a bola para efetivar um gol
+
+- Rotator
+	- Objeto "dummy" apenas para colisão (sem código específico)
+	- Junta revoluta para motor

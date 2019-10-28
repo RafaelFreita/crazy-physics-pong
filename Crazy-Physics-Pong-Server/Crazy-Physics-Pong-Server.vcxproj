@@ -22,8 +22,12 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{E09AB4A2-B0DE-4F5B-A0DB-354A162803AA}</ProjectGuid>
     <RootNamespace>CrazyPhysicsPong</RootNamespace>
+<<<<<<< HEAD:Crazy-Physics-Pong-Server/Crazy-Physics-Pong-Server.vcxproj
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>Crazy-Physics-Pong-Server</ProjectName>
+=======
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+>>>>>>> 67e77ea43ac1e5d1fc163e2edc30cfae7af008d0:Crazy-Physics-Pong/Crazy-Physics-Pong.vcxproj
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
