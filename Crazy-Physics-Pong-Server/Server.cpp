@@ -104,7 +104,11 @@ namespace CPPong {
 			// Check if is a player
 			if (clientLeft != NULL) {
 				if (clientLeft->ip == senderIp && clientLeft->port == senderPort) {
-					std::copy(std::begin(receivedData), std::end(receivedData), std::begin(receivedDataL));
+					//strcpy_s(receivedDataL, receivedSize, receivedData);
+					for (size_t c = 0; c < receivedSize; c++) {
+						receivedDataL[c] = receivedData[c];
+					}
+
 					clientLeftData = reinterpret_cast<GameUserData*>(receivedDataL);
 					continue;
 				}
@@ -112,7 +116,11 @@ namespace CPPong {
 
 			if (clientRight != NULL) {
 				if (clientRight->ip == senderIp && clientRight->port == senderPort) {
-					std::copy(std::begin(receivedData), std::end(receivedData), std::begin(receivedDataR));
+					//strcpy_s(receivedDataR, receivedSize, receivedData);
+					for (size_t c = 0; c < receivedSize; c++) {
+						receivedDataR[c] = receivedData[c];
+					}
+
 					clientRightData = reinterpret_cast<GameUserData*>(receivedDataR);
 					continue;
 				}

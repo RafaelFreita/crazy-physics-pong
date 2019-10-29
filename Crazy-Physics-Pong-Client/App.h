@@ -42,6 +42,7 @@ namespace CPPong {
 		sf::Shader postFxShader;
 		sf::RenderStates postFxRenderState;
 		sf::Font mainFont;
+		bool windowFocused = true;
 
 		// --- Box2D ---
 

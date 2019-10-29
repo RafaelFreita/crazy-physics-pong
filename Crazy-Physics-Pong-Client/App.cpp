@@ -5,6 +5,7 @@
 #include <SFML/System.hpp>
 
 // STD
+#include <Windows.h>
 #include <iostream>
 #include <random>
 
@@ -91,6 +92,9 @@ namespace CPPong {
 		sf::Thread renderThread(&App::Render, this);
 		renderThread.launch();
 
+		// Set as focused window
+		window->requestFocus();
+
 		while (window->isOpen())
 		{
 			newFrameClock = Clock::now();
@@ -111,22 +115,41 @@ namespace CPPong {
 	void App::HandleInputs()
 	{
 		sf::Event event;
+
 		while (window->pollEvent(event))
 		{
-			if (event.type == sf::Event::Closed) window->close();
-			else if (event.key.code == sf::Keyboard::Escape) window->close();
+			switch (event.type) {
+			case sf::Event::Closed:
+				window->close();
+				break;
+
+			case sf::Event::GainedFocus:
+				windowFocused = true;
+				break;
+
+			case sf::Event::LostFocus:
+				windowFocused = false;
+				break;
+
+			case sf::Event::KeyPressed:
+				if (event.key.code == sf::Keyboard::Escape) window->close();
+				break;
+
+			default:
+				break;
+			}
 		}
 
 		// --- Players Inputs ---
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) { client.SetUserPressingUp(true); }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && windowFocused) { client.SetUserPressingUp(true); }
 		else { client.SetUserPressingUp(false); }
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) { client.SetUserPressingDown(true); }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && windowFocused) { client.SetUserPressingDown(true); }
 		else { client.SetUserPressingDown(false); }
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)) { client.SetUserType(PlayerType::Default); }
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2)) { client.SetUserType(PlayerType::Wood); }
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3)) { client.SetUserType(PlayerType::Rubber); }
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4)) { client.SetUserType(PlayerType::Velcro); }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) && windowFocused) { client.SetUserType(PlayerType::Default); }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) && windowFocused) { client.SetUserType(PlayerType::Wood); }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3) && windowFocused) { client.SetUserType(PlayerType::Rubber); }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4) && windowFocused) { client.SetUserType(PlayerType::Velcro); }
 
 		// Rotators
 		/*
