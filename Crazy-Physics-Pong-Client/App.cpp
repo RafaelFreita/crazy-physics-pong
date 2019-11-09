@@ -102,7 +102,6 @@ namespace CPPong {
 
 			if (timeSinceLastTick > MILLI_PER_TICK) {
 				lastTickClock = newFrameClock;
-				gameTick++;
 
 				HandleInputs();
 				SendInputs();
@@ -272,7 +271,9 @@ namespace CPPong {
 	void App::SendInputs()
 	{
 		// Send data
-		client.SetUserPacketID(gameTick);
+		static unsigned int packetId = 0;
+		client.SetUserPacketID(packetId);
+		++packetId;
 
 		if (client.SendPacket() != sf::Socket::Status::Done) {
 			fprintf(stderr, "ERROR::FAILED TO SEND PACKET");

@@ -61,6 +61,9 @@ namespace CPPong {
 		char receivedDataL[userPacketSize] = {};
 		char receivedDataR[userPacketSize] = {};
 
+		unsigned int lastPacketL = 0;
+		unsigned int lastPacketR = 0;
+
 		unsigned int gameTick = 0;
 
 		bool running = true;

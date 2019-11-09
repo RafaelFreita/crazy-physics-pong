@@ -104,24 +104,34 @@ namespace CPPong {
 			// Check if is a player
 			if (clientLeft != NULL) {
 				if (clientLeft->ip == senderIp && clientLeft->port == senderPort) {
-					//strcpy_s(receivedDataL, receivedSize, receivedData);
-					for (size_t c = 0; c < receivedSize; c++) {
-						receivedDataL[c] = receivedData[c];
-					}
 
-					clientLeftData = reinterpret_cast<GameUserData*>(receivedDataL);
+					GameUserData* auxUserInputL = reinterpret_cast<GameUserData*>(receivedData);
+					if (auxUserInputL->header.id > lastPacketL) {
+						lastPacketL = auxUserInputL->header.id;
+
+						for (size_t c = 0; c < receivedSize; c++) {
+							receivedDataL[c] = receivedData[c];
+						}
+
+						clientLeftData = reinterpret_cast<GameUserData*>(receivedDataL);
+					}
 					continue;
 				}
 			}
 
 			if (clientRight != NULL) {
 				if (clientRight->ip == senderIp && clientRight->port == senderPort) {
-					//strcpy_s(receivedDataR, receivedSize, receivedData);
-					for (size_t c = 0; c < receivedSize; c++) {
-						receivedDataR[c] = receivedData[c];
-					}
 
-					clientRightData = reinterpret_cast<GameUserData*>(receivedDataR);
+					GameUserData* auxUserInput = reinterpret_cast<GameUserData*>(receivedData);
+					if (auxUserInput->header.id > lastPacketR) {
+						lastPacketR = auxUserInput->header.id;
+
+						for (size_t c = 0; c < receivedSize; c++) {
+							receivedDataR[c] = receivedData[c];
+						}
+
+						clientRightData = reinterpret_cast<GameUserData*>(receivedDataR);
+					}
 					continue;
 				}
 			}
