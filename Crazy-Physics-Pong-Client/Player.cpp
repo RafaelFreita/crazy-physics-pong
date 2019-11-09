@@ -74,6 +74,7 @@ namespace CPPong {
 
 	void Player::SetType(PlayerType playerType)
 	{
+		this->playerType = playerType;
 		PlayerSpecs playerSpecs = playerTypeMap.at(playerType);
 		ballRicochetFactor = playerSpecs.ballRicochetFactor;
 		ballEffectFactor = playerSpecs.ballEffectFactor;

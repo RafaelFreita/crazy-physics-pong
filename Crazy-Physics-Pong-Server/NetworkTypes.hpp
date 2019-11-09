@@ -13,6 +13,12 @@ struct GameStateData {
 
 	float playerRX;
 	float playerRY;
+
+	char playerLType;
+	char playerRType;
+
+	unsigned int playerLGoals;
+	unsigned int playerRGoals;
 };
 
 // GAME USER DATA BYTE

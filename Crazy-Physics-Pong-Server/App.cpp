@@ -130,8 +130,9 @@ namespace CPPong {
 			if (playerLData->pressingUp) { playerL->MoveUp(); }
 			if (playerLData->pressingDown) { playerL->MoveDown(); }
 
-			if (playerLData->type != playerL->GetType()) {
+			if (playerLData->type != playerL->GetPlayerType()) {
 				playerL->SetType((PlayerType)playerLData->type);
+				server.SetPlayerLType(playerLData->type);
 			}
 		}
 
@@ -140,8 +141,9 @@ namespace CPPong {
 			if (playerRData->pressingUp) { playerR->MoveUp(); }
 			if (playerRData->pressingDown) { playerR->MoveDown(); }
 
-			if (playerRData->type != playerR->GetType()) {
+			if (playerRData->type != playerR->GetPlayerType()) {
 				playerR->SetType((PlayerType)playerRData->type);
+				server.SetPlayerRType(playerRData->type);
 			}
 		}
 
@@ -207,10 +209,12 @@ namespace CPPong {
 		// Check if goals were scored
 		if (goalL->GetWasScored()) { // Right scored
 			playerRPoints++;
+			server.SetPlayerRGoals(playerRPoints);
 			ResetGameState(false);
 		}
 		else if (goalR->GetWasScored()) { // Left scored
 			playerLPoints++;
+			server.SetPlayerLGoals(playerLPoints);
 			ResetGameState(true);
 		}
 	}

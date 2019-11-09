@@ -29,6 +29,8 @@ namespace CPPong {
 		float ballRicochetFactor = 0.5;
 		float ballEffectFactor = 0.5f;
 
+		PlayerType playerType;
+
 	public:
 		static std::map<PlayerType, PlayerSpecs> const playerTypeMap;
 
@@ -42,6 +44,7 @@ namespace CPPong {
 		void CheckPhysics();
 
 		void SetType(PlayerType playerType);
+		inline PlayerType GetPlayerType() { return playerType; }
 
 		inline float GetBallEffectFactor() { return ballEffectFactor; }
 		inline float GetBallRicochetFactor() { return ballRicochetFactor; }

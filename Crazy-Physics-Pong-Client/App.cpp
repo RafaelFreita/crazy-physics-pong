@@ -202,12 +202,22 @@ namespace CPPong {
 
 		// Player L
 		playerL->SetPos(newState->playerLX * W2P, newState->playerLY * W2P);
+		if (playerL->GetPlayerType() != newState->playerLType) {
+			playerL->SetType((PlayerType)newState->playerLType);
+		}
 
 		// Player R
 		playerR->SetPos(newState->playerRX * W2P, newState->playerRY * W2P);
+		if (playerR->GetPlayerType() != newState->playerRType) {
+			playerR->SetType((PlayerType)newState->playerRType);
+		}
 
 		// Ball
 		ball->SetPos(newState->ballX * W2P, newState->ballY * W2P);
+
+		// Goals
+		playerLPoints = newState->playerLGoals;
+		playerRPoints = newState->playerRGoals;
 	}
 
 	void App::Render()
