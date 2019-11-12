@@ -26,6 +26,8 @@ namespace CPPong {
 		inline const float& GetAngle() { return body->GetAngle(); }
 		inline const b2Vec2& GetVel() { return body->GetLinearVelocity(); }
 
+		inline void SetPhysicalPos(b2Vec2 pos) { body->SetTransform(pos, body->GetAngle()); }
+
 		virtual void CheckPhysics() = 0;
 	};
 

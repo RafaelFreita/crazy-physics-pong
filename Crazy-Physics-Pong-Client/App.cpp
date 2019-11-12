@@ -219,14 +219,14 @@ namespace CPPong {
 		GameStateData* newState = client.GetLatestState();
 
 		// Player L
-		playerL->SetPos(newState->playerLX * W2P, newState->playerLY * W2P);
+		playerL->SetPhysicalPos(b2Vec2(newState->playerLX * W2P, newState->playerLY * W2P));
 		if (playerL->GetPlayerType() != newState->playerLType) {
 			playerL->SetType((PlayerType)newState->playerLType);
 		}
 		playerL->SetVel(newState->playerLVelX, newState->playerLVelY);
 
 		// Player R
-		playerR->SetPos(newState->playerRX * W2P, newState->playerRY * W2P);
+		playerR->SetPhysicalPos(b2Vec2(newState->playerRX * W2P, newState->playerRY * W2P));
 		if (playerR->GetPlayerType() != newState->playerRType) {
 			playerR->SetType((PlayerType)newState->playerRType);
 		}
