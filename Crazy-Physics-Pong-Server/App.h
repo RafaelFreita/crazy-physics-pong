@@ -75,7 +75,6 @@ namespace CPPong {
 		std::chrono::time_point<std::chrono::steady_clock> lastTickClock;
 		std::chrono::time_point<std::chrono::steady_clock> newFrameClock;
 
-
 		// --- Methods ---
 
 		void HandleInputs();

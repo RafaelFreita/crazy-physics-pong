@@ -5,14 +5,25 @@ struct PacketHeader {
 struct GameStateData {
 	PacketHeader header;
 
+	unsigned int lastIdL = 0;
+	unsigned int lastIdR = 0;
+
 	float ballX;
 	float ballY;
+	float ballDirX;
+	float ballDirY;
+	float ballAccX;
+	float ballAccY;
 
 	float playerLX;
 	float playerLY;
+	float playerLVelX;
+	float playerLVelY;
 
 	float playerRX;
 	float playerRY;
+	float playerRVelX;
+	float playerRVelY;
 
 	char playerLType;
 	char playerRType;

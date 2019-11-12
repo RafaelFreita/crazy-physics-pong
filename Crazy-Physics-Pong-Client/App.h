@@ -74,6 +74,10 @@ namespace CPPong {
 		const double MILLI_PER_TICK = 1000.0 / TPS;
 		std::chrono::time_point<std::chrono::steady_clock> lastTickClock;
 		std::chrono::time_point<std::chrono::steady_clock> newFrameClock;
+		std::chrono::time_point<std::chrono::steady_clock> lastFrameClock;
+		float deltaTime;
+
+		std::list<GameUserData> userInputsBuffer;
 
 		// --- Methods ---
 
@@ -83,6 +87,12 @@ namespace CPPong {
 		void RenderUI();
 		void Finish();
 		void SendInputs();
+
+		void UpdateState();
+		void Predict();
+		void PredictInput(GameUserData gameUserData);
+		// Predict all buffered inputs
+		void Conciliate();
 
 		// Reset game state to start
 		void Reset();

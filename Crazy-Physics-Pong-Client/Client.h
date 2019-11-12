@@ -37,6 +37,11 @@ namespace CPPong {
 
 		unsigned short privateServerPort = 0;
 
+		bool receivedPacketThisFrame = false;
+
+		// -1 NULL, 0 left, 1 right, 2 other
+		int clientType = -1;
+
 	public:
 		Client();
 		~Client();
@@ -47,12 +52,19 @@ namespace CPPong {
 
 		void Shutdown();
 
+		inline int GetClientType() { return clientType; }
+
 		inline GameStateData* GetLatestState() { return gameStatePacket; }
 
 		inline void SetUserPressingUp(bool value) { gameUserPacket->pressingUp = value; }
 		inline void SetUserPressingDown(bool value) { gameUserPacket->pressingDown = value; }
 		inline void SetUserType(char value) { gameUserPacket->type = value; }
 		inline void SetUserPacketID(unsigned int value) { gameUserPacket->header.id = value; }
+
+		inline void SetReceivedPacket(bool value) { receivedPacketThisFrame = value; }
+		inline bool GetReceivePacket() { return receivedPacketThisFrame; }
+
+		inline GameUserData GetUserPacket() { return *gameUserPacket; }
 
 	};
 

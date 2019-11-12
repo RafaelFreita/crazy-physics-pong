@@ -23,8 +23,10 @@ namespace CPPong {
 		packet.clear();
 		tcpSocket.receive(packet);
 		packet >> privateServerPort;
+		packet >> clientType;
 
 		printf("%d\n", privateServerPort);
+		printf("%i\n", clientType);
 	}
 
 	Client::~Client()
@@ -50,6 +52,7 @@ namespace CPPong {
 		}
 
 		//printf("[%s:%hu](%zu) - %s\n", senderIp.toString().c_str(), senderPort, receivedSize, receivedData);
+		receivedPacketThisFrame = true;
 
 		gameStatePacket = reinterpret_cast<GameStateData*>(gameStateData);
 

@@ -95,19 +95,29 @@ namespace CPPong {
 		// Set as focused window
 		window->requestFocus();
 
+		lastFrameClock = Clock::now();
+
 		while (window->isOpen())
 		{
 			newFrameClock = Clock::now();
+			deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(newFrameClock - lastTickClock).count() / 1000.0f;
+			lastFrameClock = newFrameClock;
+
 			auto timeSinceLastTick = std::chrono::duration_cast<std::chrono::milliseconds>(newFrameClock - lastTickClock).count();
+
+			client.SetReceivedPacket(false);
+			Update();
 
 			if (timeSinceLastTick > MILLI_PER_TICK) {
 				lastTickClock = newFrameClock;
 
 				HandleInputs();
 				SendInputs();
-			}
 
-			Update();
+				if (!client.GetReceivePacket()) {
+					Predict();
+				}
+			}
 		}
 	}
 
@@ -197,6 +207,15 @@ namespace CPPong {
 			throw new std::exception("ERROR::FAILED TO RECEIVE DATA");
 		}
 
+		if (client.GetReceivePacket()) {
+			UpdateState();
+			Conciliate();
+		}
+
+	}
+
+	void App::UpdateState()
+	{
 		GameStateData* newState = client.GetLatestState();
 
 		// Player L
@@ -204,19 +223,104 @@ namespace CPPong {
 		if (playerL->GetPlayerType() != newState->playerLType) {
 			playerL->SetType((PlayerType)newState->playerLType);
 		}
+		playerL->SetVel(newState->playerLVelX, newState->playerLVelY);
 
 		// Player R
 		playerR->SetPos(newState->playerRX * W2P, newState->playerRY * W2P);
 		if (playerR->GetPlayerType() != newState->playerRType) {
 			playerR->SetType((PlayerType)newState->playerRType);
 		}
+		playerR->SetVel(newState->playerRVelX, newState->playerRVelY);
 
 		// Ball
 		ball->SetPos(newState->ballX * W2P, newState->ballY * W2P);
+		ball->SetDirection(newState->ballDirX, newState->ballDirY);
+		ball->SetAcceleration(newState->ballAccX, newState->ballAccY);
 
 		// Goals
 		playerLPoints = newState->playerLGoals;
 		playerRPoints = newState->playerRGoals;
+	}
+
+	void App::Predict()
+	{
+		// Advance world simulation
+		world->Step(TIME_STEP, VEL_ITTS, POS_ITTS);
+
+		// Iterate and update objects
+		for (PhysicalObject* physicalObject : dynamicObjects) {
+
+			// Manual check
+			physicalObject->CheckPhysics();
+
+			// Set Position
+			b2Vec2 pos = physicalObject->GetPos();
+			physicalObject->SetPos(pos.x * W2P, pos.y * W2P);
+
+			// Set Rotation
+			physicalObject->SetRot(physicalObject->GetAngle() * RAD);
+		}
+	}
+
+	void App::PredictInput(GameUserData gameUserData)
+	{
+		// 0 is left, 1 is right
+		// Left
+		if (client.GetClientType() == 0) {
+			if (gameUserData.pressingUp) { playerL->MoveUp(); }
+			if (gameUserData.pressingDown) { playerL->MoveDown(); }
+		}
+		// Right
+		else if (client.GetClientType() == 1) {
+			if (gameUserData.pressingUp) { playerR->MoveUp(); }
+			if (gameUserData.pressingDown) { playerR->MoveDown(); }
+		}
+
+		Predict();
+	}
+
+	void App::Conciliate()
+	{
+		GameStateData* newState = client.GetLatestState();
+
+		// 0 is left, 1 is right
+		// If input id is the same or less then the last one server recognized
+		// Remove it
+
+		auto it = userInputsBuffer.begin();
+		bool itRemoved = false;
+
+		while (it != userInputsBuffer.end()) {
+
+			itRemoved = false;
+
+			// Left
+			if (client.GetClientType() == 0) {
+				if (it->header.id <= newState->lastIdL) {
+					it = userInputsBuffer.erase(it);
+					itRemoved = true;
+				}
+			}
+			// Right
+			else if (client.GetClientType() == 1) {
+				if (it->header.id <= newState->lastIdR) {
+					it = userInputsBuffer.erase(it);
+					itRemoved = true;
+				}
+			}
+
+			// Increment
+			if (!itRemoved) ++it;
+		}
+
+
+		// Predict all inputs that still exist
+		it = userInputsBuffer.begin();
+		while (it != userInputsBuffer.end()) {
+			PredictInput(*it);
+
+			++it;
+		}
 	}
 
 	void App::Render()
@@ -274,6 +378,8 @@ namespace CPPong {
 		static unsigned int packetId = 0;
 		client.SetUserPacketID(packetId);
 		++packetId;
+
+		userInputsBuffer.push_back(client.GetUserPacket());
 
 		if (client.SendPacket() != sf::Socket::Status::Done) {
 			fprintf(stderr, "ERROR::FAILED TO SEND PACKET");

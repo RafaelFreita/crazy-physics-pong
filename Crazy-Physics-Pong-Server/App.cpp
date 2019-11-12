@@ -269,14 +269,33 @@ namespace CPPong {
 	{
 
 		// Update game state packet and send
+		// L POS
 		b2Vec2 auxPos = playerL->GetPos();
 		server.SetPlayerLeftPos(auxPos.x, auxPos.y);
 
+		// L VEL
+		auxPos = playerL->GetVel();
+		server.SetPlayerLVel(auxPos.x, auxPos.y);
+
+		// R POS
 		auxPos = playerR->GetPos();
 		server.SetPlayerRightPos(auxPos.x, auxPos.y);
 
+		// R VEL
+		auxPos = playerR->GetVel();
+		server.SetPlayerRVel(auxPos.x, auxPos.y);
+
+		// Ball POS
 		auxPos = ball->GetPos();
 		server.SetBallPos(auxPos.x, auxPos.y);
+
+		// Ball Dir
+		auxPos = ball->GetVel();
+		server.SetBallDir(auxPos.x, auxPos.y);
+
+		// Ball Acc
+		auxPos = ball->GetAcceleration();
+		server.SetBallAcc(auxPos.x, auxPos.y);
 
 		server.SendState();
 	}

@@ -88,6 +88,11 @@ namespace CPPong {
 		inline void SetPlayerRightPos(float x, float y) { gameState.playerRX = x; gameState.playerRY = y; }
 		inline void SetBallPos(float x, float y) { gameState.ballX = x; gameState.ballY = y; }
 
+		inline void SetPlayerLVel(float x, float y) { gameState.playerLVelX = x; gameState.playerLVelY = y; }
+		inline void SetPlayerRVel(float x, float y) { gameState.playerRVelX = x; gameState.playerRVelY = y; }
+		inline void SetBallDir(float x, float y) { gameState.ballDirX = x; gameState.ballDirY = y; }
+		inline void SetBallAcc(float x, float y) { gameState.ballAccX = x; gameState.ballAccY = y; }
+
 		inline void SetPlayerLType(char type) { gameState.playerLType= type; }
 		inline void SetPlayerRType(char type) { gameState.playerRType = type; }
 

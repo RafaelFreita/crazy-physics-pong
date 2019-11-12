@@ -29,6 +29,8 @@ namespace CPPong {
 		void ClearAcceleration();
 
 		void ResetToSide(bool leftScored);
+
+		inline b2Vec2 GetAcceleration() { return acceleration; }
 	};
 
 }

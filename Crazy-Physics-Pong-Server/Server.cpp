@@ -67,6 +67,11 @@ namespace CPPong {
 							printf("Sending server UDP port to client at %s:%u!\n", clientIp.toString().c_str(), clientPort);
 							packet.clear();
 							packet << clientSocket->getLocalPort();
+
+							if (clientLeft == NULL) packet << 0;
+							else if (clientRight == NULL) packet << 1;
+							else packet << 2;
+
 							client.send(packet);
 
 							printf("Removing TCP connection from selector!\n");
@@ -164,6 +169,8 @@ namespace CPPong {
 	void Server::SendState()
 	{
 		gameState.header.id = gameTick;
+		gameState.lastIdL = lastPacketL;
+		gameState.lastIdR = lastPacketR;
 		gameTick++;
 
 		char* stateData = reinterpret_cast<char*>(&gameState);

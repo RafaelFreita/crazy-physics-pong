@@ -49,6 +49,8 @@ namespace CPPong {
 		inline float GetBallEffectFactor() { return ballEffectFactor; }
 		inline float GetBallRicochetFactor() { return ballRicochetFactor; }
 
+		inline void SetVel(float x, float y) { body->SetLinearVelocity(b2Vec2(x, y)); }
+
 		void Reset();
 	};
 

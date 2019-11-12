@@ -29,6 +29,9 @@ namespace CPPong {
 		void ClearAcceleration();
 
 		void ResetToSide(bool leftScored);
+
+		inline void SetDirection(float x, float y) { direction.x; direction.y; }
+		inline void SetAcceleration(float x, float y) { acceleration.x; acceleration.y; }
 	};
 
 }
