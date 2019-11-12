@@ -316,7 +316,6 @@ namespace CPPong {
 			if (!itRemoved) ++it;
 		}
 
-
 		// Predict all inputs that still exist
 		it = userInputsBuffer.begin();
 		while (it != userInputsBuffer.end()) {

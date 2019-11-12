@@ -122,6 +122,8 @@ namespace CPPong {
 
 		direction.x = leftScored ? -1.f : +1.f;
 		direction.y = 0.f;
+
+		acceleration = b2Vec2_zero;
 	}
 
 }
