@@ -115,6 +115,7 @@ namespace CPPong {
 				Update();
 				SendState();
 			}
+
 		}
 	}
 

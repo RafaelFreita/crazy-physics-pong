@@ -30,7 +30,7 @@ namespace CPPong {
 
 		void ResetToSide(bool leftScored);
 
-		inline void SetDirection(float x, float y) { direction.x; direction.y; }
+		inline void SetDirection(float x, float y) { body->SetLinearVelocity(b2Vec2_zero); direction.x; direction.y; }
 		inline void SetAcceleration(float x, float y) { acceleration.x; acceleration.y; }
 	};
 

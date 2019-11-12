@@ -118,6 +118,7 @@ namespace CPPong {
 					Predict();
 				}
 			}
+
 		}
 	}
 
@@ -221,18 +222,18 @@ namespace CPPong {
 		// Player L
 		playerL->SetPhysicalPos(b2Vec2(newState->playerLX, newState->playerLY));
 		playerL->SetPos(newState->playerLX * W2P, newState->playerLY * W2P);
+		playerL->SetVel(newState->playerLVelX, newState->playerLVelY);
 		if (playerL->GetPlayerType() != newState->playerLType) {
 			playerL->SetType((PlayerType)newState->playerLType);
 		}
-		playerL->SetVel(newState->playerLVelX, newState->playerLVelY);
 
 		// Player R
 		playerR->SetPhysicalPos(b2Vec2(newState->playerRX, newState->playerRY));
 		playerR->SetPos(newState->playerRX * W2P, newState->playerRY * W2P);
+		playerR->SetVel(newState->playerRVelX, newState->playerRVelY);
 		if (playerR->GetPlayerType() != newState->playerRType) {
 			playerR->SetType((PlayerType)newState->playerRType);
 		}
-		playerR->SetVel(newState->playerRVelX, newState->playerRVelY);
 
 		// Ball
 		ball->SetPhysicalPos(b2Vec2(newState->ballX, newState->ballY));
