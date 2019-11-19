@@ -115,7 +115,7 @@ namespace CPPong {
 				SendInputs();
 
 				if (!client.GetReceivePacket()) {
-					Predict();
+					PredictInput(client.GetUserPacket());
 				}
 			}
 
@@ -273,11 +273,19 @@ namespace CPPong {
 		if (client.GetClientType() == 0) {
 			if (gameUserData.pressingUp) { playerL->MoveUp(); }
 			if (gameUserData.pressingDown) { playerL->MoveDown(); }
+
+			if (gameUserData.type != playerL->GetPlayerType()){
+				playerL->SetType((PlayerType)gameUserData.type);
+			}
 		}
 		// Right
 		else if (client.GetClientType() == 1) {
 			if (gameUserData.pressingUp) { playerR->MoveUp(); }
 			if (gameUserData.pressingDown) { playerR->MoveDown(); }
+
+			if (gameUserData.type != playerR->GetPlayerType()) {
+				playerR->SetType((PlayerType)gameUserData.type);
+			}
 		}
 
 		Predict();
