@@ -114,7 +114,7 @@ namespace CPPong {
 
 
 	public:
-		App(int width, int height, string title);
+		App(int width, int height, string title, sf::IpAddress ip);
 		~App();
 
 		void Run();

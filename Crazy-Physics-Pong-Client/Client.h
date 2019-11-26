@@ -16,7 +16,6 @@
 using std::string;
 
 // Consts
-const sf::IpAddress SERVER_IP = "127.0.0.1";
 const UINT8 SERVER_PORT = 31415;
 
 namespace CPPong {
@@ -42,8 +41,10 @@ namespace CPPong {
 		// -1 NULL, 0 left, 1 right, 2 other
 		int clientType = -1;
 
+		sf::IpAddress serverIp;
+
 	public:
-		Client();
+		Client(sf::IpAddress ip);
 		~Client();
 		
 		sf::Socket::Status SendPacket();

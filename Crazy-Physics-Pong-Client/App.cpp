@@ -14,7 +14,7 @@
 
 namespace CPPong {
 
-	App::App(int width, int height, string title) : width(width), height(height), title(title)
+	App::App(int width, int height, string title, sf::IpAddress ip) : width(width), height(height), title(title), client(ip)
 	{
 		/* --- SFML Setup --- */
 
@@ -78,6 +78,7 @@ namespace CPPong {
 		Reset();
 
 		lastTickClock = Clock::now();
+
 	}
 
 	App::~App()

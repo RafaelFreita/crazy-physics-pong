@@ -1,7 +1,7 @@
 #include "Client.h"
 
 namespace CPPong {
-	Client::Client()
+	Client::Client(sf::IpAddress ip) : serverIp(ip)
 	{
 		if (socket.bind(sf::Socket::AnyPort) != sf::Socket::Status::Done) {
 			fprintf(stderr, "ERROR::FAILED TO BIND PORT\n");
@@ -13,7 +13,7 @@ namespace CPPong {
 
 		// Send UDP port
 		packet << socket.getLocalPort();
-		if (tcpSocket.connect(SERVER_IP, SERVER_PORT)) {
+		if (tcpSocket.connect(serverIp, SERVER_PORT)) {
 			fprintf(stderr, "ERROR::FAILED TO CONNECT TCP\n");
 			throw "ERROR::FAILED TO CONNECT TCP";
 		}
@@ -35,7 +35,7 @@ namespace CPPong {
 
 	sf::Socket::Status Client::SendPacket()
 	{
-		return socket.send(reinterpret_cast<char*>(gameUserPacket), userPacketSize, SERVER_IP, privateServerPort);
+		return socket.send(reinterpret_cast<char*>(gameUserPacket), userPacketSize, serverIp, privateServerPort);
 	}
 
 	sf::Socket::Status Client::Receive()

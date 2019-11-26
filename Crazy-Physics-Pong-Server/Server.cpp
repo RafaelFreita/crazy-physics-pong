@@ -9,6 +9,8 @@ namespace CPPong {
 
 		listenSocket.setBlocking(false);
 		senderSocket.setBlocking(false);
+
+		printf("Listening on %s:%u !\n", sf::IpAddress("127.0.0.1").getLocalAddress().toString().c_str(), SERVER_PORT);
 	}
 
 	Server::~Server()
